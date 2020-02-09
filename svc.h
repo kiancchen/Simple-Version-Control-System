@@ -7,8 +7,8 @@
 #define DELETION 1
 
 typedef struct resolution {
-    char *file_name;
     int type;
+    char *file_name;
     char *resolved_file;
 } resolution;
 
