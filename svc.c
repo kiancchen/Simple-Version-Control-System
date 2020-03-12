@@ -6,6 +6,7 @@ void *svc_init(void) {
 }
 
 void cleanup(void *helper) {
+    // TODO: Implement
 }
 
 int hash_file(void *helper, char *file_path) {
@@ -62,7 +63,7 @@ int svc_reset(void *helper, char *commit_id) {
     return 0;
 }
 
-char *svc_merge(void *helper, char *branch_name, resolution *resolutions, int n_resolutions) {
+char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     // TODO: Implement
     return NULL;
 }

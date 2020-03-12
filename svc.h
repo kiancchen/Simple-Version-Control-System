@@ -3,11 +3,7 @@
 
 #include <stdlib.h>
 
-#define MODIFICATION 0
-#define DELETION 1
-
 typedef struct resolution {
-    int type;
     char *file_name;
     char *resolved_file;
 } resolution;
