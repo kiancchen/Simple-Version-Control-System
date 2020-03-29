@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 typedef struct resolution {
+    // NOTE: DO NOT MODIFY THIS STRUCT
     char *file_name;
     char *resolved_file;
 } resolution;
