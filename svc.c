@@ -196,8 +196,7 @@ int add_commit(void *helper, char *id, char *message) {
     }
     // init the new commit
     struct commit *commit = malloc(sizeof(struct commit));
-    commit->commit_id = strdup(id);
-    free(id);
+    commit->commit_id = id;
     commit->br_name = strdup(cur_br->name);
     commit->message = message;
     commit->files = malloc(sizeof(struct file *) * cur_br->n_files);
