@@ -1,22 +1,25 @@
 #include "svc.h"
 
-struct file **stage_cpy(struct file **stage, int n_files) {
-    struct file **copy = malloc(sizeof(struct file *) * n_files);
+void stage_cpy(struct file ***dist, struct file ***stage, int n_files, int swap) {
     for (int i = 0; i < n_files; ++i) {
         struct file *file = malloc(sizeof(struct file));
-        file->file_paths = stage[i]->file_paths;
-        file->content = strdup(stage[i]->content);
-        file->hash = stage[i]->hash;
-        file->chg_type = stage[i]->chg_type;
+        file->file_paths = (*stage)[i]->file_paths;
+        file->content = strdup((*stage)[i]->content);
+        file->hash = (*stage)[i]->hash;
+        file->chg_type = (*stage)[i]->chg_type;
 
         if (file->chg_type == -1) {
             file->chg_type = -2;
         } else {
             file->chg_type = 0;
         }
-        copy[i] = file;
+        (*dist)[i] = file;
     }
-    return copy;
+    if (swap){
+        struct file **temp = *stage;
+        *stage = *dist;
+        *dist = temp;
+    }
 
 }
 
@@ -116,6 +119,7 @@ void *svc_init(void) {
 
 
 int hash_file(void *helper, char *file_path) {
+    helper = NULL;
     if (file_path == NULL) {
         return -1;
     }
@@ -125,13 +129,14 @@ int hash_file(void *helper, char *file_path) {
     if (!read_file(content, file_path, size)) {
         return -2;
     }
+
     // calculate the hash value
     int hash = 0;
-    for (char *c = file_path; *c != '\0'; ++c) {
+    for (char *c = file_path; *c != '\0'; c++) {
         hash = (hash + *c) % 1000;
     }
 
-    for (char *c = content; *c != '\0'; ++c) {
+    for (char *c = content; *c != '\0'; c++) {
         hash = (hash + *c) % 2000000000;
     }
 
@@ -194,9 +199,9 @@ int add_commit(void *helper, char *id, char *message) {
     commit->commit_id = strdup(id);
     commit->br_name = strdup(cur_br->name);
     commit->message = message;
-    struct file **copy = stage_cpy(cur_br->stage, cur_br->n_files);
-    commit->files = cur_br->stage;
-    cur_br->stage = copy;
+//    struct file **copy = stage_cpy(cur_br->stage, cur_br->n_files);
+    commit->files = malloc(sizeof(struct file *) * cur_br->n_files);
+    stage_cpy(&commit->files, &cur_br->stage, cur_br->n_files, 1);
     commit->n_files = cur_br->n_files;
     commit->detached = FALSE;
     if (cur_br->head == NULL) {
@@ -204,7 +209,7 @@ int add_commit(void *helper, char *id, char *message) {
         commit->parent = NULL;
     } else {
         commit->n_parent = 1;
-        commit->parent = malloc((sizeof(char *)));
+        commit->parent = malloc((sizeof(char *)) * 2);
         commit->parent[0] = cur_br->head->commit_id;
     }
     // add the commit to the branch
@@ -269,6 +274,7 @@ void *get_commit(void *helper, char *commit_id) {
 }
 
 char **get_prev_commits(void *helper, void *commit, int *n_prev) {
+    helper = NULL;
     if (n_prev == NULL) {
         return NULL;
     }
@@ -350,10 +356,10 @@ int svc_branch(void *helper, char *branch_name) {
     branch->head = cur_br->head;
     // copy files
     branch->n_files = cur_br->n_files;
-    struct file **copy = stage_cpy(cur_br->stage, cur_br->n_files);
-    branch->stage = cur_br->stage;
-    cur_br->stage = copy;
     branch->capacity_file = cur_br->capacity_file;
+    branch->stage = malloc(sizeof(struct file*) * branch->capacity_file);
+    stage_cpy(&branch->stage, &cur_br->stage, cur_br->n_files, 1);
+
     // copy commits
     branch->n_commits = cur_br->n_commits;
     branch->capacity_commit = cur_br->capacity_commit;
@@ -367,7 +373,7 @@ int svc_branch(void *helper, char *branch_name) {
         branch->commits[i]->parent = cur_br->commits[i]->parent;
         branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
         branch->commits[i]->detached = cur_br->commits[i]->detached;
-        branch->commits[i]->files = malloc(sizeof(struct file*) * branch->commits[i]->n_files);
+        branch->commits[i]->files = malloc(sizeof(struct file *) * branch->commits[i]->n_files);
         for (int j = 0; j < branch->commits[i]->n_files; ++j) {
             branch->commits[i]->files[j] = malloc(sizeof(struct file));
             branch->commits[i]->files[j]->file_paths = cur_br->commits[i]->files[j]->file_paths;
@@ -493,8 +499,8 @@ int svc_reset(void *helper, char *commit_id) {
     }
     cur_br->head = cur_br->commits[index];
     cur_br->n_files = cur_br->head->n_files;
-    struct file **copy = stage_cpy(cur_br->head->files, cur_br->head->n_files);
-    cur_br->stage = copy;
+    stage_cpy(&cur_br->stage, &cur_br->head->files, cur_br->head->n_files, 0);
+
     cur_br->capacity_file = cur_br->n_files * 2;
     // restore files
     for (int i = 0; i < cur_br->n_files; ++i) {
