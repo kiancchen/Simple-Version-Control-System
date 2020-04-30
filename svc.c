@@ -20,7 +20,7 @@ struct file **stage_cpy(struct file **stage, int n_files) {
 
 }
 
-int sort_files(void *helper) {
+void sort_files(void *helper) {
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
     struct file *tmp;
@@ -241,16 +241,12 @@ void check_modification(void *helper) {
 }
 
 char *svc_commit(void *helper, char *message) {
-    struct helper *help = (struct helper *) helper;
     check_modification(helper);
     char *hex = calc_cmt_id(helper, message);
     if (hex == NULL) {
         return NULL;
     }
-
     add_commit(helper, hex, message);
-
-
     return hex;
 
 }
