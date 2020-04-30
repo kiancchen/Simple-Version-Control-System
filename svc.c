@@ -620,6 +620,8 @@ void cleanup(void *helper) {
         branch->stage = NULL;
         free(branch->name);
         branch->name = NULL;
+        free(branch);
+        branch = NULL;
     }
     free(help->branches);
     help->branches = NULL;
