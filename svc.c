@@ -447,18 +447,18 @@ int svc_add(void *helper, char *file_name) {
     char content[size + 1];
     read_file(content, file_name, size);
     // create a file object
-    struct file *file = malloc(sizeof(struct file));
-    file->file_paths = file_name;
-    file->content = strdup(content);
+    struct file file;
+    file.file_paths = file_name;
+    file.content = strdup(content);
     int hash = hash_file(helper, file_name);
-    file->hash = hash;
-    file->chg_type = 1; // change type is addition
+    file.hash = hash;
+    file.chg_type = 1; // change type is addition
     // add the file to stage
     if (cur_br->n_files == cur_br->capacity_file) {
         cur_br->capacity_file *= 2;
         cur_br->stage = realloc(cur_br->stage, cur_br->capacity_file);
     }
-    cur_br->stage[cur_br->n_files] = file;
+    cur_br->stage[cur_br->n_files] = &file;
 
     cur_br->n_files++;
     // store this change
