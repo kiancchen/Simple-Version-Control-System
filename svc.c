@@ -191,7 +191,7 @@ int add_commit(void *helper, char *id, char *message) {
     }
     // init the new commit
     struct commit *commit = malloc(sizeof(struct commit));
-    commit->commit_id = id;
+    commit->commit_id = strdup(id);
     commit->br_name = strdup(cur_br->name);
     commit->message = message;
     struct file **copy = stage_cpy(cur_br->stage, cur_br->n_files);
@@ -362,12 +362,19 @@ int svc_branch(void *helper, char *branch_name) {
         branch->commits[i] = malloc(sizeof(struct commit));
         branch->commits[i]->br_name = strdup(branch_name);
         branch->commits[i]->message = cur_br->commits[i]->message;
-        branch->commits[i]->commit_id = cur_br->commits[i]->commit_id;
+        branch->commits[i]->commit_id = strdup(cur_br->commits[i]->commit_id);
         branch->commits[i]->n_files = cur_br->commits[i]->n_files;
         branch->commits[i]->parent = cur_br->commits[i]->parent;
         branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
         branch->commits[i]->detached = cur_br->commits[i]->detached;
-        branch->commits[i]->files = cur_br->commits[i]->files;
+        branch->commits[i]->files = malloc(sizeof(struct file*) * branch->commits[i]->n_files);
+        for (int j = 0; j < branch->commits[i]->n_files; ++j) {
+            branch->commits[i]->files[j] = malloc(sizeof(struct file));
+            branch->commits[i]->files[j]->file_paths = cur_br->commits[i]->files[j]->file_paths;
+            branch->commits[i]->files[j]->hash = cur_br->commits[i]->files[j]->hash;
+            branch->commits[i]->files[j]->chg_type = cur_br->commits[i]->files[j]->chg_type;
+            branch->commits[i]->files[j]->content = strdup(cur_br->commits[i]->files[j]->content);
+        }
     }
     branch->n_detached = 0;
     help->n_branches++;
