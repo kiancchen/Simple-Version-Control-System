@@ -199,7 +199,6 @@ int add_commit(void *helper, char *id, char *message) {
     commit->commit_id = strdup(id);
     commit->br_name = strdup(cur_br->name);
     commit->message = message;
-//    struct file **copy = stage_cpy(cur_br->stage, cur_br->n_files);
     commit->files = malloc(sizeof(struct file *) * cur_br->n_files);
     stage_cpy(&commit->files, &cur_br->stage, cur_br->n_files, 1);
     commit->n_files = cur_br->n_files;
@@ -270,6 +269,7 @@ void *get_commit(void *helper, char *commit_id) {
             }
         }
     }
+    free(commit_id);
     return NULL;
 }
 
@@ -284,6 +284,8 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     }
     struct commit *cmt = (struct commit *) commit;
     *n_prev = cmt->n_parent;
+
+
     return cmt->parent;
 }
 
@@ -316,6 +318,7 @@ void print_commit(void *helper, char *commit_id) {
             printf("\t[%10d] %s\n", file->hash, file->file_paths);
         }
     }
+
 }
 
 int svc_branch(void *helper, char *branch_name) {
@@ -610,10 +613,10 @@ void cleanup(void *helper) {
                 free(file);
                 file = NULL;
             }
-            free(commit->br_name);
-            commit->br_name = NULL;
             free(commit->files);
             commit->files = NULL;
+            free(commit->br_name);
+            commit->br_name = NULL;
             free(commit->commit_id);
             commit->commit_id = NULL;
             free(commit->parent);
