@@ -458,10 +458,8 @@ int svc_add(void *helper, char *file_name) {
         cur_br->capacity_file *= 2;
         cur_br->stage = realloc(cur_br->stage, cur_br->capacity_file);
     }
-    cur_br->stage[cur_br->n_files] = malloc(sizeof(struct file));
-    memcpy(cur_br->stage[cur_br->n_files], file, sizeof(struct file));
-    free(file);
-    file = NULL;
+    cur_br->stage[cur_br->n_files] = file;
+
     cur_br->n_files++;
     // store this change
     return hash;
@@ -507,7 +505,7 @@ int svc_reset(void *helper, char *commit_id) {
     cur_br->head = cur_br->commits[index];
     cur_br->n_files = cur_br->head->n_files;
     files_copy(cur_br->stage, cur_br->head->files, cur_br->head->n_files);
-
+    restore_change(cur_br->stage, cur_br->n_files);
     cur_br->capacity_file = cur_br->n_files * 2;
     // restore files
     for (int i = 0; i < cur_br->n_files; ++i) {
