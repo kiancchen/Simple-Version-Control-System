@@ -629,7 +629,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         printf("Branch not found\n");
         return NULL;
     }
-    printf("merged_br address: %p/n", merged_br);
+
     // check if it's the current checked out branch
     if (help->cur_branch == merged_br) {
         printf("Cannot merge a branch with itself\n");
@@ -647,13 +647,17 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     char message[51] = "Merged branch ";
     strcat(message, branch_name);
 
-    printf("merged_br address: %p/n", merged_br);
     int n_files = cur_br->n_files;
     for (int i = 0; i < merged_br->n_files; ++i) {
         struct file *m_f = merged_br->stage[i];
         int found = FALSE;
         for (int j = 0; j < n_files; ++j) {
             struct file *file = cur_br->stage[i];
+            if (file == NULL){
+                printf("File does not exits");
+                return "File does not exits";
+            }
+            printf("File does exits");
             if (strcmp(file->file_path, m_f->file_path) == 0) {
                 found = TRUE;
                 if (file->hash != m_f->hash) {
