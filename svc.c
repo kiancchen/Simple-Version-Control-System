@@ -208,7 +208,7 @@ int add_commit(void *helper, char *id, char *message) {
     struct commit *commit = malloc(sizeof(struct commit));
     commit->commit_id = id;
     commit->br_name = strdup(cur_br->name);
-    commit->message = message;
+    commit->message = strdup(message);
     commit->files = malloc(sizeof(struct file *) * cur_br->n_files);
     files_copy(commit->files, cur_br->stage, cur_br->n_files);
     restore_change(cur_br->stage, cur_br->n_files);
@@ -633,6 +633,8 @@ void cleanup(void *helper) {
                 free(file);
                 commit->files[k] = NULL;
             }
+            free(commit->message);
+            commit->message = NULL;
             free(commit->files);
             commit->files = NULL;
             free(commit->br_name);
