@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 0
+#define CHECK 1
 #define PC 0
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -12,7 +12,7 @@ int files_copy(struct file **dist, struct file **stage, int n_files) {
         file->hash = stage[i]->hash;
         file->chg_type = stage[i]->chg_type;
         dist[i] = file;
-        if (file->chg_type >= 0){
+        if (file->chg_type >= 0) {
             tracked_file++;
         }
     }
@@ -148,7 +148,7 @@ char *calc_cmt_id(void *helper, char *message) {
     struct branch *cur_br = help->cur_branch;
     // calculate the commit_id
     int id = 0;
-    for (unsigned char *c = (unsigned char *)message; *c != '\0'; ++c) {
+    for (unsigned char *c = (unsigned char *) message; *c != '\0'; ++c) {
         id = (id + *c) % 1000;
     }
     sort_files(helper);
@@ -167,7 +167,7 @@ char *calc_cmt_id(void *helper, char *message) {
         } else {
             id += 9573681;
         }
-        for (unsigned char *c = (unsigned char *)(file->file_path); *c != '\0'; ++c) {
+        for (unsigned char *c = (unsigned char *) (file->file_path); *c != '\0'; ++c) {
             id = (id * (*c % 37)) % 15485863 + 1;
         }
 
@@ -229,10 +229,10 @@ void check_changes(void *helper, int check_modification) {
         int new_hash = hash_file(helper, file->file_path);
         if (new_hash == -2) {
             if (CHECK) printf("File %s are deleted mutually 1\n", file->file_path);
-            if (file->chg_type == 1){
+            if (file->chg_type == 1) {
                 if (CHECK) printf("File %s are deleted mutually 2\n", file->file_path);
                 file->chg_type = -2;
-            }else{
+            } else {
                 file->chg_type = -1;
             }
             continue;
@@ -251,7 +251,7 @@ void check_changes(void *helper, int check_modification) {
 }
 
 char *svc_commit(void *helper, char *message) {
-    if (CHECK){
+    if (CHECK) {
         printf("svc_commit with message [%s]\n", message);
     }
 
@@ -266,7 +266,7 @@ char *svc_commit(void *helper, char *message) {
 }
 
 void *get_commit(void *helper, char *commit_id) {
-    if (CHECK){
+    if (CHECK) {
         printf("get_commit with id [%s]\n", commit_id);
     }
 
@@ -298,11 +298,11 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
         return NULL;
     }
     struct commit *cmt = (struct commit *) commit;
-    if (CHECK){
+    if (CHECK) {
         printf("get_prev_commit with id[%s]\n", cmt->commit_id);
     }
     *n_prev = cmt->n_parent;
-    if (*n_prev == 0){
+    if (*n_prev == 0) {
         return NULL;
     }
     char **parent = malloc(sizeof(char *) * *n_prev);
@@ -314,7 +314,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
 }
 
 void print_commit(void *helper, char *commit_id) {
-    if (CHECK){
+    if (CHECK) {
         printf("print_commit with id [%s]\n", commit_id);
     }
 
@@ -350,7 +350,7 @@ void print_commit(void *helper, char *commit_id) {
 }
 
 int svc_branch(void *helper, char *branch_name) {
-    if (CHECK){
+    if (CHECK) {
         printf("svc_branch with name [%s]\n", branch_name);
     }
     if (branch_name == NULL) {
@@ -418,7 +418,7 @@ int svc_branch(void *helper, char *branch_name) {
 }
 
 int svc_checkout(void *helper, char *branch_name) {
-    if (CHECK){
+    if (CHECK) {
         printf("svc_checkout with name [%s]\n", branch_name);
     }
     if (branch_name == NULL) {
@@ -444,7 +444,7 @@ int svc_checkout(void *helper, char *branch_name) {
 }
 
 char **list_branches(void *helper, int *n_branches) {
-    if (CHECK){
+    if (CHECK) {
         printf("list_branches\n");
     }
     if (n_branches == NULL) {
@@ -461,7 +461,7 @@ char **list_branches(void *helper, int *n_branches) {
 }
 
 int svc_add(void *helper, char *file_name) {
-    if (CHECK){
+    if (CHECK) {
         printf("svc_add with file_path [%s]", file_name);
     }
     struct helper *help = (struct helper *) helper;
@@ -473,12 +473,12 @@ int svc_add(void *helper, char *file_name) {
     }
     for (int i = 0; i < cur_br->n_files; ++i) {
         if (strcmp(cur_br->stage[i]->file_path, file_name) == 0) {
-            if (cur_br->stage[i]->chg_type == -1 || cur_br->stage[i]->chg_type == -2){
+            if (cur_br->stage[i]->chg_type == -1 || cur_br->stage[i]->chg_type == -2) {
                 // the file added but removed
                 if (CHECK) printf("\tthe file added but removed\n");
-                cur_br->stage[i] ->chg_type = 1;
+                cur_br->stage[i]->chg_type = 1;
                 return hash_file(helper, file_name);
-            }else{
+            } else {
                 if (CHECK) printf("\tFile exits now\n");
                 //the file exits now
                 return -2;
@@ -518,7 +518,7 @@ int svc_add(void *helper, char *file_name) {
 }
 
 int svc_rm(void *helper, char *file_name) {
-    if (CHECK){
+    if (CHECK) {
         printf("svc_rm with file_path [%s]\n", file_name);
     }
     if (file_name == NULL) {
@@ -541,7 +541,7 @@ int svc_rm(void *helper, char *file_name) {
 }
 
 int svc_reset(void *helper, char *commit_id) {
-    if (CHECK){
+    if (CHECK) {
         printf("svc_reset to id [%s]\n", commit_id);
     }
     if (commit_id == NULL) {
@@ -591,8 +591,13 @@ int svc_reset(void *helper, char *commit_id) {
 }
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
-    if (CHECK){
+    if (CHECK) {
         printf("svc_merge with branch_name [%s] with %d resolutions\n", branch_name, n_resolutions);
+        for (int i = 0; i < n_resolutions; ++i) {
+            struct resolution resolution = resolutions[i];
+            printf("Conflicting file: %s\n", resolution.file_name);
+            printf("Resolution file: %s\n", resolution.resolved_file);
+        }
     }
 
     struct helper *help = (struct helper *) helper;
