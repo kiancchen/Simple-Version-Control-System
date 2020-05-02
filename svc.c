@@ -47,27 +47,6 @@ void sort_files(void *helper) {
         }
     }
 }
-//
-//int branch_has_file(void *helper, char *file_path) {
-//    // if the file_path has been in the stage, return TRUE. Or False.
-//    struct helper *help = (struct helper *) helper;
-//    struct branch *cur_br = help->cur_branch;
-//    struct file **stage = cur_br->stage;
-//    int n_files = cur_br->n_files;
-//
-//    for (int i = 0; i < n_files; ++i) {
-//        if (strcmp(stage[i]->file_path, file_path) == 0) {
-//            if (stage[i]->chg_type != -1 && stage[i]->chg_type != -2){
-//                // the file added but removed
-//                return 1;
-//            }else{
-//                //the file exits new
-//                return 2;
-//            }
-//        }
-//    }
-//    return 0; // the file never added into the system
-//}
 
 long file_length(char *file_path) {
     FILE *f = fopen(file_path, "r");
@@ -653,7 +632,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         int found = FALSE;
         for (int j = 0; j < n_files; ++j) {
             struct file *file = cur_br->stage[i];
-            if (file == NULL){
+            if (file->file_path == NULL || m_f->file_path == NULL){
                 printf("File does not exits");
                 return "File does not exits";
             }
