@@ -297,6 +297,9 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     }
     struct commit *cmt = (struct commit *) commit;
     *n_prev = cmt->n_parent;
+    if (*n_prev == 0){
+        return NULL;
+    }
     char **parent = malloc(sizeof(char *) * *n_prev);
     for (int i = 0; i < *n_prev; ++i) {
         parent[i] = strdup(cmt->parent[i]);
