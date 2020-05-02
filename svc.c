@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -661,7 +661,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                             free(file->content);
                             file->content = NULL;
                             file->content = strdup(content);
-                            file->chg_type = 2;
+                            file->chg_type = 0;
                             file->hash = hash_file(helper, file->file_path);
                             break;
                         }
