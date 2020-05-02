@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -497,14 +497,12 @@ int svc_add(void *helper, char *file_name) {
     // read the file
     char content[size + 1];
     read_file(content, file_name, size);
-    printf("{%s}\n", content);
+    if (CHECK) printf("{%s}\n", content);
     // create a file object
     struct file *file = malloc(sizeof(struct file));
     file->file_path = strdup(file_name);
     file->content = strdup(content);
-//    if (CHECK){
-//        printf("%s\n", content);
-//    }
+
     int hash = hash_file(helper, file_name);
     file->hash = hash;
     file->chg_type = 1; // change type is addition
@@ -516,7 +514,7 @@ int svc_add(void *helper, char *file_name) {
     cur_br->stage[cur_br->n_files] = file;
     cur_br->n_files++;
     // store this change
-    if (CHECK) printf("\thash%d\t", hash);
+    if (CHECK) printf("\thash: %d\n", hash);
     return hash;
 }
 
@@ -597,7 +595,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     if (CHECK){
         printf("svc_merge with branch_name [%s] with %d resolutions\n", branch_name, n_resolutions);
     }
-    return "11";
+
     struct helper *help = (struct helper *) helper;
     if (branch_name == NULL) {
         printf("Invalid branch message\n");
@@ -638,12 +636,8 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         struct file *m_f = merged_br->stage[i];
         int found = FALSE;
         for (int j = 0; j < n_files; ++j) {
-            struct file *file = cur_br->stage[i];
-            if (file == NULL){
-                printf("File does not exits");
-                return "File does not exits";
-            }
-            printf("File does exits");
+            struct file *file = cur_br->stage[j];
+
             if (strcmp(file->file_path, m_f->file_path) == 0) {
                 found = TRUE;
                 if (file->hash != m_f->hash) {
