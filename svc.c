@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -228,9 +228,9 @@ void check_changes(void *helper, int check_modification) {
         }
         int new_hash = hash_file(helper, file->file_path);
         if (new_hash == -2) {
-            if (CHECK) printf("File %s are deleted mutually 1\n", file->file_path);
-            if (file->chg_type == 1) {
-                if (CHECK) printf("File %s are deleted mutually 2\n", file->file_path);
+            if (CHECK) printf("File %s are deleted manually 1\n", file->file_path);
+            if (file->chg_type == 1 || file->chg_type == -2) {
+                if (CHECK) printf("File %s are deleted manually 2\n", file->file_path);
                 file->chg_type = -2;
             } else {
                 file->chg_type = -1;
