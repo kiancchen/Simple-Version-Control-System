@@ -616,7 +616,7 @@ void cleanup(void *helper) {
                 free(file->content);
                 file->content = NULL;
                 free(file);
-                file = NULL;
+                commit->files[k] = NULL;
             }
             free(commit->files);
             commit->files = NULL;
@@ -634,9 +634,9 @@ void cleanup(void *helper) {
         for (int l = 0; l < branch->n_files; ++l) {
             struct file *file = branch->stage[l];
             free(file->content);
-            file = NULL;
+            file->content = NULL;
             free(file);
-            file = NULL;
+            branch->stage[l] = NULL;
         }
         free(branch->stage);
         branch->stage = NULL;
