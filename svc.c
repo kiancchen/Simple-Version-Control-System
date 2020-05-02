@@ -497,6 +497,7 @@ int svc_add(void *helper, char *file_name) {
     // read the file
     char content[size + 1];
     read_file(content, file_name, size);
+    printf("{%s}\n", content);
     // create a file object
     struct file *file = malloc(sizeof(struct file));
     file->file_path = strdup(file_name);
