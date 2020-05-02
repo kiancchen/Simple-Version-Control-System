@@ -27,6 +27,7 @@ struct commit {
     char *message;
     struct file **files;
     int n_files;
+    int tracked_files;
     char **parent;
     int n_parent;
     int detached;

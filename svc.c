@@ -1,9 +1,10 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 
 
-void files_copy(struct file **dist, struct file **stage, int n_files) {
+int files_copy(struct file **dist, struct file **stage, int n_files) {
+    int tracked_file = 0;
     for (int i = 0; i < n_files; ++i) {
         struct file *file = malloc(sizeof(struct file));
         file->file_path = strdup(stage[i]->file_path);
@@ -11,7 +12,11 @@ void files_copy(struct file **dist, struct file **stage, int n_files) {
         file->hash = stage[i]->hash;
         file->chg_type = stage[i]->chg_type;
         dist[i] = file;
+        if (file->chg_type >= 0){
+            tracked_file++;
+        }
     }
+    return tracked_file;
 }
 
 void restore_change(struct file **stage, int n_files) {
@@ -214,7 +219,7 @@ int add_commit(void *helper, char *id, char *message) {
     commit->br_name = strdup(cur_br->name);
     commit->message = strdup(message);
     commit->files = malloc(sizeof(struct file *) * cur_br->n_files);
-    files_copy(commit->files, cur_br->stage, cur_br->n_files);
+    commit->tracked_files = files_copy(commit->files, cur_br->stage, cur_br->n_files);
     restore_change(cur_br->stage, cur_br->n_files);
 
     commit->n_files = cur_br->n_files;
