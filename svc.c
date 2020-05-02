@@ -13,7 +13,7 @@ int files_copy(struct file **dist, struct file **stage, int n_files) {
         file->hash = stage[i]->hash;
         file->chg_type = stage[i]->chg_type;
         dist[i] = file;
-        if (file->chg_type != -1) {
+        if (file->chg_type >= 0) {
             tracked_file++;
         }
     }
@@ -219,21 +219,7 @@ int add_commit(void *helper, char *id, char *message) {
     return 1;
 }
 
-void remove_from_all_branches(void *helper, char *file_path) {
-    struct helper *help = (struct helper *) helper;
-    for (int i = 0; i < help->n_branches; ++i) {
-        struct branch *branch = help->branches[i];
-        if (branch == help->cur_branch){
-            continue;
-        }
-        for (int j = 0; j < branch->n_files; ++j) {
-            struct file *file = branch->stage[j];
-            if (strcmp(file->file_path, file_path) == 0) {
-                file->chg_type = -2;
-            }
-        }
-    }
-}
+
 
 void check_changes(void *helper, int check_modification) {
     struct helper *help = (struct helper *) helper;
@@ -245,7 +231,6 @@ void check_changes(void *helper, int check_modification) {
         }
         int new_hash = hash_file(helper, file->file_path);
         if (new_hash == -2) {
-            remove_from_all_branches(helper, file->file_path);
             if (CHECK) printf("File %s are deleted manually 1\n", file->file_path);
             if (file->chg_type == 1 || file->chg_type == -2) {
                 if (CHECK) printf("File %s are deleted manually 2\n", file->file_path);
@@ -360,7 +345,7 @@ void print_commit(void *helper, char *commit_id) {
     printf("\n    Tracked files (%d):\n", commit->tracked_files);
     for (int i = 0; i < commit->n_files; ++i) {
         struct file *file = commit->files[i];
-        if (file->chg_type != -1) {
+        if (file->chg_type >= 0) {
             printf("    [%10d] %s\n", file->hash, file->file_path);
         }
     }
@@ -454,6 +439,16 @@ int svc_checkout(void *helper, char *branch_name) {
     for (int i = 0; i < help->n_branches; ++i) {
         if (strcmp(help->branches[i]->name, branch_name) == 0) {
             help->cur_branch = help->branches[i];
+            check_changes(helper, FALSE);
+            // if a file is deleted manually, restore it.
+            for (int j = 0; j < help->cur_branch->n_files; ++j) {
+                struct file* file = help->cur_branch->stage[j];
+                if (file->chg_type == -2){
+                    FILE *fp = fopen(file->file_path, "W");
+                    fputs(file->content, fp);
+                    fclose(fp);
+                }
+            }
             return 0;
         }
     }
