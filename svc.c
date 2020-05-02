@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -648,10 +648,11 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     strcat(message, branch_name);
 
     printf("merged_br address: %p/n", merged_br);
+    int n_files = cur_br->n_files;
     for (int i = 0; i < merged_br->n_files; ++i) {
         struct file *m_f = merged_br->stage[i];
         int found = FALSE;
-        for (int j = 0; j < cur_br->n_files; ++j) {
+        for (int j = 0; j < n_files; ++j) {
             struct file *file = cur_br->stage[i];
             if (strcmp(file->file_path, m_f->file_path) == 0) {
                 found = TRUE;
