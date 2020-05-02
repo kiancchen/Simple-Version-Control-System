@@ -3,6 +3,7 @@
 #define CHECK 0
 #define PC 0
 
+
 int files_copy(struct file **dist, struct file **stage, int n_files) {
     int tracked_file = 0;
     for (int i = 0; i < n_files; ++i) {
@@ -218,6 +219,22 @@ int add_commit(void *helper, char *id, char *message) {
     return 1;
 }
 
+void remove_from_all_branches(void *helper, char *file_path) {
+    struct helper *help = (struct helper *) helper;
+    for (int i = 0; i < help->n_branches; ++i) {
+        struct branch *branch = help->branches[i];
+        if (branch == help->cur_branch){
+            continue;
+        }
+        for (int j = 0; j < branch->n_files; ++j) {
+            struct file *file = branch->stage[j];
+            if (strcmp(file->file_path, file_path) == 0) {
+                file->chg_type = -2;
+            }
+        }
+    }
+}
+
 void check_changes(void *helper, int check_modification) {
     struct helper *help = (struct helper *) helper;
 
@@ -228,6 +245,7 @@ void check_changes(void *helper, int check_modification) {
         }
         int new_hash = hash_file(helper, file->file_path);
         if (new_hash == -2) {
+            remove_from_all_branches(helper, file->file_path);
             if (CHECK) printf("File %s are deleted manually 1\n", file->file_path);
             if (file->chg_type == 1 || file->chg_type == -2) {
                 if (CHECK) printf("File %s are deleted manually 2\n", file->file_path);
