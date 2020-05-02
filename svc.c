@@ -478,6 +478,7 @@ int svc_add(void *helper, char *file_name) {
     }
     cur_br->stage[cur_br->n_files] = file;
     cur_br->n_files++;
+    printf("The file name is: %s\n", cur_br->stage[cur_br->n_files]->file_path);
     // store this change
     return hash;
 }
