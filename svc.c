@@ -632,7 +632,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         int found = FALSE;
         for (int j = 0; j < n_files; ++j) {
             struct file *file = cur_br->stage[i];
-            if (m_f->file_path == NULL){
+            if (file->file_path == NULL){
                 printf("File does not exits");
                 return "File does not exits";
             }
