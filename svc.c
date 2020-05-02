@@ -165,7 +165,7 @@ char *calc_cmt_id(void *helper, char *message) {
     int n_changes = 0;
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = files[i];
-        if (file->chg_type == 0) {
+        if (file->chg_type == 0 || file->chg_type == -2) {
             continue;
         }
         n_changes++;
