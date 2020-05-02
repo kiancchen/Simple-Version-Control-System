@@ -157,7 +157,7 @@ char *calc_cmt_id(void *helper, char *message) {
     for (char *c = message; *c != '\0'; ++c) {
         unsigned char *uc = (unsigned char *)c;
         int a = *uc;
-        id = (id + *c) % 1000;
+        id = (id + a) % 1000;
     }
     sort_files(helper);
     struct file **files = cur_br->stage;
@@ -178,7 +178,7 @@ char *calc_cmt_id(void *helper, char *message) {
         for (char *c = file->file_path; *c != '\0'; ++c) {
             unsigned char *uc = (unsigned char *)c;
             int a = *uc;
-            id = (id * (*c % 37)) % 15485863 + 1;
+            id = (id * (a % 37)) % 15485863 + 1;
         }
     }
     if (n_changes == 0) {
