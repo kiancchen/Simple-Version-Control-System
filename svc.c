@@ -122,14 +122,7 @@ int hash_file(void *helper, char *file_path) {
     if (file_path == NULL) {
         return -1;
     }
-    long size = file_length(file_path);
-    char content[size + 1];
-    // if file not found
-    if (!read_file(content, file_path, size)) {
-        return -2;
-    }
-    content[size] = '\0';
-    // calculate the hash value
+    FILE *fp = fopen(file_path, "rb+");
     int hash = 0;
 
     for (char *c = file_path; *c != '\0'; c++) {
@@ -138,11 +131,17 @@ int hash_file(void *helper, char *file_path) {
         hash = (hash + a) % 1000;
     }
 
-    for (char *c = content; *c != '\0'; c++) {
-        unsigned char *uc = (unsigned char *)c;
-        int a = *uc;
-        hash = (hash + a) % 2000000000;
+    while (!feof(fp)){
+        int c = fgetc(fp);
+        hash = (hash + c) % 2000000000;
     }
+    hash += 1;
+
+//    for (char *c = content; *c != '\0'; c++) {
+//        unsigned char *uc = (unsigned char *)c;
+//        int a = *uc;
+//
+//    }
 
     return hash;
 }
