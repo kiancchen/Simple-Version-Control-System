@@ -52,9 +52,10 @@ int branch_has_file(void *helper, char *file_path) {
 
     for (int i = 0; i < n_files; ++i) {
 
-        if (strcmp(stage[i]->file_path, file_path) == 0 && stage[i]->chg_type != -1) {
-
-            return TRUE;
+        if (strcmp(stage[i]->file_path, file_path) == 0) {
+            if (stage[i]->chg_type != -1 && stage[i]->chg_type != -2){
+                return TRUE;
+            }
         }
     }
     return FALSE;
@@ -470,9 +471,9 @@ int svc_add(void *helper, char *file_name) {
         return -1;
     }
 
-//    if (branch_has_file(helper, file_name)) {
-//        return -2;
-//    }
+    if (branch_has_file(helper, file_name)) {
+        return -2;
+    }
 
     // get the length of the file
     long size = file_length(file_name);
