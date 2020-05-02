@@ -218,7 +218,7 @@ int add_commit(void *helper, char *id, char *message) {
     return 1;
 }
 
-void check_modification(void *helper) {
+void check_changes(void *helper, int check_modification) {
     struct helper *help = (struct helper *) helper;
 
     for (int i = 0; i < help->cur_branch->n_files; ++i) {
@@ -237,7 +237,7 @@ void check_modification(void *helper) {
             }
             continue;
         }
-        if (new_hash != file->hash) {
+        if (check_modification && new_hash != file->hash) {
             file->hash = new_hash;
             file->chg_type = 2;
             long size = file_length(file->file_path);
@@ -247,7 +247,6 @@ void check_modification(void *helper) {
             free(file->content);
             file->content = strdup(content);
         }
-
     }
 }
 
@@ -256,7 +255,7 @@ char *svc_commit(void *helper, char *message) {
         printf("svc_commit with message [%s]\n", message);
     }
 
-    check_modification(helper);
+    check_changes(helper, TRUE);
     char *hex = calc_cmt_id(helper, message);
     if (hex == NULL) {
         return NULL;
@@ -621,7 +620,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     }
     struct branch *cur_br = help->cur_branch;
     // check if there's changes uncommitted
-    check_modification(helper);
+    check_changes(helper, FALSE);
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
         if (file->chg_type == -1 || file->chg_type == 1 || file->chg_type == 2) {
