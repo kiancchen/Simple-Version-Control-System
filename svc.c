@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 
 
 void files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -259,7 +259,10 @@ void check_modification(void *helper) {
 }
 
 char *svc_commit(void *helper, char *message) {
-    printf("svc_commit with message [%s]\n", message);
+    if (CHECK){
+        printf("svc_commit with message [%s]\n", message);
+    }
+
     check_modification(helper);
     char *hex = calc_cmt_id(helper, message);
     if (hex == NULL) {
@@ -316,7 +319,9 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
 }
 
 void print_commit(void *helper, char *commit_id) {
-    printf("print_commit with id [%s]\n", commit_id);
+    if (CHECK){
+        printf("print_commit with id [%s]\n", commit_id);
+    }
 
     struct commit *commit = (struct commit *) get_commit(helper, commit_id);
     if (commit == NULL) {
@@ -350,8 +355,9 @@ void print_commit(void *helper, char *commit_id) {
 }
 
 int svc_branch(void *helper, char *branch_name) {
-    printf("svc_branch with name [%s]\n", branch_name);
-
+    if (CHECK){
+        printf("svc_branch with name [%s]\n", branch_name);
+    }
     if (branch_name == NULL) {
         return -1;
     }
@@ -417,8 +423,9 @@ int svc_branch(void *helper, char *branch_name) {
 }
 
 int svc_checkout(void *helper, char *branch_name) {
-    printf("svc_checkout with name [%s]\n", branch_name);
-
+    if (CHECK){
+        printf("svc_checkout with name [%s]\n", branch_name);
+    }
     if (branch_name == NULL) {
         return -1;
     }
@@ -442,8 +449,9 @@ int svc_checkout(void *helper, char *branch_name) {
 }
 
 char **list_branches(void *helper, int *n_branches) {
-    printf("list_branches\n");
-
+    if (CHECK){
+        printf("list_branches\n");
+    }
     if (n_branches == NULL) {
         return NULL;
     }
@@ -461,8 +469,6 @@ int svc_add(void *helper, char *file_name) {
     if (CHECK){
         printf("svc_add with file_path [%s]\n", file_name);
     }
-
-
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
     if (cur_br->n_files > 0) {
