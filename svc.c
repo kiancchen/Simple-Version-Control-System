@@ -46,14 +46,11 @@ int branch_has_file(void *helper, char *file_path) {
     struct branch *cur_br = help->cur_branch;
     struct file **stage = cur_br->stage;
     int n_files = cur_br->n_files;
-    if (n_files > 0){
-        printf("First file name: %s\n", stage[0]->file_path);
-    }
 
     for (int i = 0; i < n_files; ++i) {
-        printf("Names: %s %s\n", stage[i]->file_path, file_path);
+
         if (strcmp(stage[i]->file_path, file_path) == 0 && stage[i]->chg_type != -1) {
-            printf("Above one\n");
+
             return TRUE;
         }
     }
@@ -444,11 +441,10 @@ char **list_branches(void *helper, int *n_branches) {
 }
 
 int svc_add(void *helper, char *file_name) {
-    printf("%s\n", file_name);
+
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
     if (cur_br->n_files > 0){
-        printf("First name: %s\n", cur_br->stage[0]->file_path);
     }
     if (helper == NULL || file_name == NULL) {
         return -1;
@@ -469,7 +465,7 @@ int svc_add(void *helper, char *file_name) {
     read_file(content, file_name, size);
     // create a file object
     struct file *file = malloc(sizeof(struct file));
-    file->file_path = file_name;
+    file->file_path = strdup(file_name);
     file->content = strdup(content);
     int hash = hash_file(helper, file_name);
     file->hash = hash;
@@ -480,7 +476,6 @@ int svc_add(void *helper, char *file_name) {
         cur_br->stage = realloc(cur_br->stage, cur_br->capacity_file);
     }
     cur_br->stage[cur_br->n_files] = file;
-    printf("The file name is: %s\n", cur_br->stage[cur_br->n_files]->file_path);
     cur_br->n_files++;
     // store this change
     return hash;
@@ -631,6 +626,8 @@ void cleanup(void *helper) {
             // free the files
             for (int k = 0; k < commit->n_files; ++k) {
                 struct file *file = commit->files[k];
+                free(file->file_path);
+                file->file_path = NULL;
                 free(file->content);
                 file->content = NULL;
                 free(file);
@@ -651,6 +648,7 @@ void cleanup(void *helper) {
         branch->commits = NULL;
         for (int l = 0; l < branch->n_files; ++l) {
             struct file *file = branch->stage[l];
+
             free(file->content);
             file->content = NULL;
             free(file);
