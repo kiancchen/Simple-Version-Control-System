@@ -244,7 +244,7 @@ void check_modification(void *helper) {
         }
         int new_hash = hash_file(helper, file->file_path);
         if (new_hash == -2) {
-            if (file->chg_type != 1){
+            if (file->chg_type == 1){
                 file->chg_type = -2;
             }else{
                 file->chg_type = -1;
