@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 0
+#define CHECK 1
 
 
 void files_copy(struct file **dist, struct file **stage, int n_files) {
