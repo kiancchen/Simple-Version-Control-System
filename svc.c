@@ -228,8 +228,9 @@ void check_modification(void *helper) {
         }
         int new_hash = hash_file(helper, file->file_path);
         if (new_hash == -2) {
+            if (CHECK) printf("File %s are deleted mutually 1\n", file->file_path);
             if (file->chg_type == 1){
-                if (CHECK) printf("File %s are deleted mutually\n", file->file_path);
+                if (CHECK) printf("File %s are deleted mutually 2\n", file->file_path);
                 file->chg_type = -2;
             }else{
                 file->chg_type = -1;
