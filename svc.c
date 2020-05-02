@@ -447,6 +447,9 @@ int svc_add(void *helper, char *file_name) {
     printf("%s\n", file_name);
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
+    if (cur_br->n_files > 0){
+        printf("First name: %s\n", cur_br->stage[0]->file_path);
+    }
     if (helper == NULL || file_name == NULL) {
         return -1;
     }
