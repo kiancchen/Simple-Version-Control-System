@@ -302,7 +302,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     }
     char **parent = malloc(sizeof(char *) * *n_prev);
     for (int i = 0; i < *n_prev; ++i) {
-        parent[i] = strdup(cmt->parent[i]);
+        parent[i] = cmt->parent[i];
     }
 
     return parent;
