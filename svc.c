@@ -1,7 +1,7 @@
 #include "svc.h"
 
-#define CHECK 0
-
+#define CHECK 1
+#define PC 0
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
     int tracked_file = 0;
@@ -497,7 +497,7 @@ int svc_add(void *helper, char *file_name) {
     // read the file
     char content[size + 1];
     read_file(content, file_name, size);
-    if (CHECK) printf("{%s}\n", content);
+    if (PC) printf("{%s}\n", content);
     // create a file object
     struct file *file = malloc(sizeof(struct file));
     file->file_path = strdup(file_name);
