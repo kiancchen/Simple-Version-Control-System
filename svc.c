@@ -344,7 +344,7 @@ void print_commit(void *helper, char *commit_id) {
     printf("%s [%s]: %s\n", commit_id, commit->br_name, commit->message);
     for (int i = 0; i < commit->n_files; ++i) {
         struct file *file = commit->files[i];
-        if (file->chg_type == 0) {
+        if (file->chg_type == 0 || file->chg_type == -2) {
             continue;
         }
         char sign;
