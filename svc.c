@@ -297,9 +297,12 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     }
     struct commit *cmt = (struct commit *) commit;
     *n_prev = cmt->n_parent;
+    char **parent = malloc(sizeof(char *) * *n_prev);
+    for (int i = 0; i < *n_prev; ++i) {
+        parent[i] = strdup(cmt->parent[i]);
+    }
 
-
-    return cmt->parent;
+    return parent;
 }
 
 void print_commit(void *helper, char *commit_id) {
