@@ -1,5 +1,8 @@
 #include "svc.h"
 
+#define CHECK 1
+
+
 void files_copy(struct file **dist, struct file **stage, int n_files) {
     for (int i = 0; i < n_files; ++i) {
         struct file *file = malloc(sizeof(struct file));
@@ -482,6 +485,9 @@ int svc_add(void *helper, char *file_name) {
     struct file *file = malloc(sizeof(struct file));
     file->file_path = strdup(file_name);
     file->content = strdup(content);
+    if (CHECK){
+        printf("%s\n", content);
+    }
     int hash = hash_file(helper, file_name);
     file->hash = hash;
     file->chg_type = 1; // change type is addition
