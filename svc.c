@@ -123,6 +123,9 @@ int hash_file(void *helper, char *file_path) {
         return -1;
     }
     FILE *fp = fopen(file_path, "rb+");
+    if (!fp){
+        return -2;
+    }
     int hash = 0;
 
     for (char *c = file_path; *c != '\0'; c++) {
