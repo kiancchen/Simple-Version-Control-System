@@ -444,7 +444,7 @@ int svc_checkout(void *helper, char *branch_name) {
             for (int j = 0; j < help->cur_branch->n_files; ++j) {
                 struct file* file = help->cur_branch->stage[j];
                 if (file->chg_type == -1){
-                    FILE *fp = fopen(file->file_path, "W");
+                    FILE *fp = fopen(file->file_path, "w");
                     fputs(file->content, fp);
                     fclose(fp);
                     file->chg_type = 0;
