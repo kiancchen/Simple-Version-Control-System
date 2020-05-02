@@ -3,7 +3,7 @@
 void files_copy(struct file **dist, struct file **stage, int n_files) {
     for (int i = 0; i < n_files; ++i) {
         struct file *file = malloc(sizeof(struct file));
-        file->file_paths = stage[i]->file_paths;
+        file->file_path = stage[i]->file_path;
         file->content = strdup(stage[i]->content);
         file->hash = stage[i]->hash;
         file->chg_type = stage[i]->chg_type;
@@ -29,7 +29,7 @@ void sort_files(void *helper) {
     struct file **files = cur_br->stage;
     for (int i = 0; i < cur_br->n_files; i++) {
         for (int j = i + 1; j < cur_br->n_files; j++) {
-            int diff = strcasecmp(files[i]->file_paths, files[j]->file_paths);
+            int diff = strcasecmp(files[i]->file_path, files[j]->file_path);
             if (diff > 0) {
                 // swap the file
                 tmp = files[i];
@@ -47,7 +47,7 @@ int branch_has_file(void *helper, char *file_path) {
     struct file **stage = cur_br->stage;
     int n_files = cur_br->n_files;
     for (int i = 0; i < n_files; ++i) {
-        if (strcmp(stage[i]->file_paths, file_path) == 0 && stage[i]->chg_type != -1) {
+        if (strcmp(stage[i]->file_path, file_path) == 0 && stage[i]->chg_type != -1) {
             return TRUE;
         }
     }
@@ -122,7 +122,10 @@ int hash_file(void *helper, char *file_path) {
     if (file_path == NULL) {
         return -1;
     }
+
     FILE *fp = fopen(file_path, "rb+");
+
+    // if the file not found
     if (!fp){
         return -2;
     }
@@ -138,13 +141,7 @@ int hash_file(void *helper, char *file_path) {
         int c = fgetc(fp);
         hash = (hash + c) % 2000000000;
     }
-    hash += 1;
-
-//    for (char *c = content; *c != '\0'; c++) {
-//        unsigned char *uc = (unsigned char *)c;
-//        int a = *uc;
-//
-//    }
+    hash += 1; // add 1 which is subtracted due to EOF (-1)
 
     return hash;
 }
@@ -176,7 +173,7 @@ char *calc_cmt_id(void *helper, char *message) {
         } else {
             id += 9573681;
         }
-        for (char *c = file->file_paths; *c != '\0'; ++c) {
+        for (char *c = file->file_path; *c != '\0'; ++c) {
             id = (id * (*c % 37)) % 15485863 + 1;
         }
     }
@@ -234,7 +231,7 @@ void check_modification(void *helper) {
         if (file->chg_type < 0) {
             return;
         }
-        int new_hash = hash_file(helper, file->file_paths);
+        int new_hash = hash_file(helper, file->file_path);
         if (new_hash == -2) {
             file->chg_type = -2;
             continue;
@@ -242,10 +239,10 @@ void check_modification(void *helper) {
         if (new_hash != file->hash) {
             file->hash = new_hash;
             file->chg_type = 2;
-            long size = file_length(file->file_paths);
+            long size = file_length(file->file_path);
             // read the file
             char content[size + 1];
-            read_file(content, file->file_paths, size);
+            read_file(content, file->file_path, size);
             file->content = strdup(content);
         }
 
@@ -317,13 +314,13 @@ void print_commit(void *helper, char *commit_id) {
         } else {
             sign = '/';
         }
-        printf("\t%c %s\n", sign, file->file_paths);
+        printf("\t%c %s\n", sign, file->file_path);
     }
     printf("\n\tTracked files (%d):\n", commit->n_files);
     for (int i = 0; i < commit->n_files; ++i) {
         struct file *file = commit->files[i];
         if (file->chg_type != -1) {
-            printf("\t[%10d] %s\n", file->hash, file->file_paths);
+            printf("\t[%10d] %s\n", file->hash, file->file_path);
         }
     }
 
@@ -387,7 +384,7 @@ int svc_branch(void *helper, char *branch_name) {
         branch->commits[i]->files = malloc(sizeof(struct file *) * branch->commits[i]->n_files);
         for (int j = 0; j < branch->commits[i]->n_files; ++j) {
             branch->commits[i]->files[j] = malloc(sizeof(struct file));
-            branch->commits[i]->files[j]->file_paths = cur_br->commits[i]->files[j]->file_paths;
+            branch->commits[i]->files[j]->file_path = cur_br->commits[i]->files[j]->file_path;
             branch->commits[i]->files[j]->hash = cur_br->commits[i]->files[j]->hash;
             branch->commits[i]->files[j]->chg_type = cur_br->commits[i]->files[j]->chg_type;
             branch->commits[i]->files[j]->content = strdup(cur_br->commits[i]->files[j]->content);
@@ -454,18 +451,18 @@ int svc_add(void *helper, char *file_name) {
     char content[size + 1];
     read_file(content, file_name, size);
     // create a file object
-    struct file file;
-    file.file_paths = file_name;
-    file.content = strdup(content);
+    struct file *file = malloc(sizeof(struct file));
+    file->file_path = file_name;
+    file->content = strdup(content);
     int hash = hash_file(helper, file_name);
-    file.hash = hash;
-    file.chg_type = 1; // change type is addition
+    file->hash = hash;
+    file->chg_type = 1; // change type is addition
     // add the file to stage
     if (cur_br->n_files == cur_br->capacity_file) {
         cur_br->capacity_file *= 2;
         cur_br->stage = realloc(cur_br->stage, cur_br->capacity_file);
     }
-    cur_br->stage[cur_br->n_files] = &file;
+    cur_br->stage[cur_br->n_files] = file;
     cur_br->n_files++;
     // store this change
     return hash;
@@ -479,7 +476,7 @@ int svc_rm(void *helper, char *file_name) {
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
     for (int i = 0; i < cur_br->n_files; ++i) {
-        if (strcmp(cur_br->stage[i]->file_paths, file_name) == 0) {
+        if (strcmp(cur_br->stage[i]->file_path, file_name) == 0) {
             if (cur_br->stage[i]->chg_type < 0) {
                 return -2;
             }
@@ -516,7 +513,7 @@ int svc_reset(void *helper, char *commit_id) {
     // restore files
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
-        FILE *fp = fopen(file->file_paths, "w");
+        FILE *fp = fopen(file->file_path, "w");
         fputs(file->content, fp);
         fclose(fp);
     }
@@ -570,24 +567,24 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         int found = FALSE;
         for (int j = 0; j < cur_br->n_files; ++j) {
             struct file *file = cur_br->stage[i];
-            if (strcmp(file->file_paths, m_f->file_paths) == 0) {
+            if (strcmp(file->file_path, m_f->file_path) == 0) {
                 found = TRUE;
                 if (file->hash != m_f->hash) {
                     for (int k = 0; k < n_resolutions; ++k) {
                         // look for the resolution for this conflicting file
-                        if (strcmp(resolutions[k].file_name, file->file_paths) == 0) {
+                        if (strcmp(resolutions[k].file_name, file->file_path) == 0) {
                             long size = file_length(resolutions[k].file_name);
                             FILE *fp = fopen(resolutions[k].file_name, "r");
                             // read the file
                             char content[size + 1];
                             read_file(content, resolutions[k].file_name, size);
                             fclose(fp);
-                            fp = fopen(file->file_paths, "w");
+                            fp = fopen(file->file_path, "w");
                             fputs(content, fp);
                             fclose(fp);
                             file->content = strdup(content);
                             file->chg_type = 2;
-                            file->hash = hash_file(helper, file->file_paths);
+                            file->hash = hash_file(helper, file->file_path);
                             break;
                         }
                     }
@@ -596,7 +593,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             }
         }
         if (!found) {
-            svc_add(helper, m_f->file_paths);
+            svc_add(helper, m_f->file_path);
         }
     }
     char *cmt_id = svc_commit(helper, message);

@@ -15,7 +15,7 @@ typedef struct resolution {
 } resolution;
 
 struct file {
-    char *file_paths;
+    char *file_path;
     char *content;
     int hash;
     int chg_type; // change of type: -2 for not tracking; -1 for deletion; 0 for no changes; 1 for addition; 2 for modification
