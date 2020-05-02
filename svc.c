@@ -155,6 +155,8 @@ char *calc_cmt_id(void *helper, char *message) {
     // calculate the commit_id
     int id = 0;
     for (char *c = message; *c != '\0'; ++c) {
+        unsigned char *uc = (unsigned char *)c;
+        int a = *uc;
         id = (id + *c) % 1000;
     }
     sort_files(helper);
@@ -174,6 +176,8 @@ char *calc_cmt_id(void *helper, char *message) {
             id += 9573681;
         }
         for (char *c = file->file_path; *c != '\0'; ++c) {
+            unsigned char *uc = (unsigned char *)c;
+            int a = *uc;
             id = (id * (*c % 37)) % 15485863 + 1;
         }
     }
@@ -645,10 +649,8 @@ void cleanup(void *helper) {
         free(branch);
         branch = NULL;
     }
-
     free(help->branches);
     help->branches = NULL;
     free(help);
     help = NULL;
-
 }
