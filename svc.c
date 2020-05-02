@@ -189,7 +189,7 @@ char *calc_cmt_id(void *helper, char *message) {
     }
     // convert to hexadecimal number
     char *hex = malloc(sizeof(char) * 7);
-    sprintf(hex, "%x", id);
+    sprintf(hex, "%06x", id);
     hex[6] = '\0';
     return hex;
 }
