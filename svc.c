@@ -595,7 +595,7 @@ int svc_reset(void *helper, char *commit_id) {
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     if (CHECK){
-        printf("svc_merge with branch_name [%s]\n", branch_name);
+        printf("svc_merge with branch_name [%s] with %d resolutions\n", branch_name, n_resolutions);
     }
     return "11";
     struct helper *help = (struct helper *) helper;
