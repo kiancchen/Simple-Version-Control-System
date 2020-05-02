@@ -3,7 +3,7 @@
 void files_copy(struct file **dist, struct file **stage, int n_files) {
     for (int i = 0; i < n_files; ++i) {
         struct file *file = malloc(sizeof(struct file));
-        file->file_path = stage[i]->file_path;
+        file->file_path = strdup(stage[i]->file_path);
         file->content = strdup(stage[i]->content);
         file->hash = stage[i]->hash;
         file->chg_type = stage[i]->chg_type;
@@ -389,13 +389,8 @@ int svc_branch(void *helper, char *branch_name) {
         branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
         branch->commits[i]->detached = cur_br->commits[i]->detached;
         branch->commits[i]->files = malloc(sizeof(struct file *) * branch->commits[i]->n_files);
-        for (int j = 0; j < branch->commits[i]->n_files; ++j) {
-            branch->commits[i]->files[j] = malloc(sizeof(struct file));
-            branch->commits[i]->files[j]->file_path = cur_br->commits[i]->files[j]->file_path;
-            branch->commits[i]->files[j]->hash = cur_br->commits[i]->files[j]->hash;
-            branch->commits[i]->files[j]->chg_type = cur_br->commits[i]->files[j]->chg_type;
-            branch->commits[i]->files[j]->content = strdup(cur_br->commits[i]->files[j]->content);
-        }
+        files_copy(branch->commits[i]->files, cur_br->commits[i]->files, branch->commits[i]->n_files);
+
     }
     branch->n_detached = 0;
     help->n_branches++;
@@ -650,7 +645,8 @@ void cleanup(void *helper) {
         branch->commits = NULL;
         for (int l = 0; l < branch->n_files; ++l) {
             struct file *file = branch->stage[l];
-
+            free(file->file_path);
+            file->file_path = NULL;
             free(file->content);
             file->content = NULL;
             free(file);
