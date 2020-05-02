@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 0
+#define CHECK 1
 
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -518,9 +518,9 @@ int svc_add(void *helper, char *file_name) {
     struct file *file = malloc(sizeof(struct file));
     file->file_path = strdup(file_name);
     file->content = strdup(content);
-    if (CHECK){
-        printf("%s\n", content);
-    }
+//    if (CHECK){
+//        printf("%s\n", content);
+//    }
     int hash = hash_file(helper, file_name);
     file->hash = hash;
     file->chg_type = 1; // change type is addition
@@ -629,6 +629,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         printf("Branch not found\n");
         return NULL;
     }
+    printf("merged_br address: %p/n", merged_br);
     // check if it's the current checked out branch
     if (help->cur_branch == merged_br) {
         printf("Cannot merge a branch with itself\n");
@@ -646,6 +647,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     char message[51] = "Merged branch ";
     strcat(message, branch_name);
 
+    printf("merged_br address: %p/n", merged_br);
     for (int i = 0; i < merged_br->n_files; ++i) {
         struct file *m_f = merged_br->stage[i];
         int found = FALSE;
