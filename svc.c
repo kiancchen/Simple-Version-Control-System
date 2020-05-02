@@ -447,7 +447,7 @@ int svc_checkout(void *helper, char *branch_name) {
                     FILE *fp = fopen(file->file_path, "W");
                     fputs(file->content, fp);
                     fclose(fp);
-                    file->chg_type == 0;
+                    file->chg_type = 0;
                 }
             }
             return 0;
