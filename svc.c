@@ -229,6 +229,7 @@ void check_modification(void *helper) {
         int new_hash = hash_file(helper, file->file_path);
         if (new_hash == -2) {
             if (file->chg_type == 1){
+                if (CHECK) printf("File %s are deleted mutually\n", file->file_path);
                 file->chg_type = -2;
             }else{
                 file->chg_type = -1;
@@ -461,7 +462,7 @@ char **list_branches(void *helper, int *n_branches) {
 
 int svc_add(void *helper, char *file_name) {
     if (CHECK){
-        printf("svc_add with file_path [%s]\n", file_name);
+        printf("svc_add with file_path [%s]", file_name);
     }
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
@@ -474,10 +475,12 @@ int svc_add(void *helper, char *file_name) {
         if (strcmp(cur_br->stage[i]->file_path, file_name) == 0) {
             if (cur_br->stage[i]->chg_type == -1 || cur_br->stage[i]->chg_type == -2){
                 // the file added but removed
+                if (CHECK) printf("\tthe file added but removed\n");
                 cur_br->stage[i] ->chg_type = 1;
                 return hash_file(helper, file_name);
             }else{
-                //the file exits new
+                if (CHECK) printf("\tFile exits now\n");
+                //the file exits now
                 return -2;
             }
         }
@@ -511,6 +514,7 @@ int svc_add(void *helper, char *file_name) {
     cur_br->stage[cur_br->n_files] = file;
     cur_br->n_files++;
     // store this change
+    if (CHECK) printf("\thash%d\t", hash);
     return hash;
 }
 
