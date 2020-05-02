@@ -131,13 +131,16 @@ int hash_file(void *helper, char *file_path) {
 
     // calculate the hash value
     int hash = 0;
+    printf("%s\n", content);
     for (char *c = file_path; *c != '\0'; c++) {
-        int a = *c;
-        hash = (hash +  a) % 1000;
+        unsigned char *uc = (unsigned char *)c;
+        int a = *uc;
+        hash = (hash + a) % 1000;
     }
 
     for (char *c = content; *c != '\0'; c++) {
-        int a = *c;
+        unsigned char *uc = (unsigned char *)c;
+        int a = *uc;
         hash = (hash + a) % 2000000000;
     }
 
