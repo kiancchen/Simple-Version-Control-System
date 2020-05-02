@@ -132,11 +132,11 @@ int hash_file(void *helper, char *file_path) {
     // calculate the hash value
     int hash = 0;
     for (char *c = file_path; *c != '\0'; c++) {
-        hash = (hash + *c) % 1000;
+        hash = (hash + (unsigned char) *c) % 1000;
     }
 
     for (char *c = content; *c != '\0'; c++) {
-        hash = (hash + *c) % 2000000000;
+        hash = (hash + (unsigned char) *c) % 2000000000;
     }
 
     return hash;
@@ -221,9 +221,9 @@ int add_commit(void *helper, char *id, char *message) {
 
 void check_modification(void *helper) {
     struct helper *help = (struct helper *) helper;
-    struct branch *cur_br = help->cur_branch;
-    for (int i = 0; i < cur_br->n_files; ++i) {
-        struct file *file = cur_br->stage[i];
+
+    for (int i = 0; i < help->cur_branch->n_files; ++i) {
+        struct file *file = help->cur_branch->stage[i];
         if (file->chg_type < 0) {
             return;
         }
@@ -459,7 +459,6 @@ int svc_add(void *helper, char *file_name) {
         cur_br->stage = realloc(cur_br->stage, cur_br->capacity_file);
     }
     cur_br->stage[cur_br->n_files] = &file;
-
     cur_br->n_files++;
     // store this change
     return hash;
