@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -621,6 +621,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     }
     struct branch *cur_br = help->cur_branch;
     // check if there's changes uncommitted
+    check_modification(helper);
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
         if (file->chg_type == -1 || file->chg_type == 1 || file->chg_type == 2) {
