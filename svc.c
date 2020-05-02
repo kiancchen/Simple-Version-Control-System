@@ -46,6 +46,10 @@ int branch_has_file(void *helper, char *file_path) {
     struct branch *cur_br = help->cur_branch;
     struct file **stage = cur_br->stage;
     int n_files = cur_br->n_files;
+    if (n_files > 0){
+        printf("First file name: %s\n", stage[0]->file_path);
+    }
+
     for (int i = 0; i < n_files; ++i) {
         printf("Names: %s %s\n", stage[i]->file_path, file_path);
         if (strcmp(stage[i]->file_path, file_path) == 0 && stage[i]->chg_type != -1) {
