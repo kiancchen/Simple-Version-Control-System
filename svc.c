@@ -255,7 +255,7 @@ void check_modification(void *helper) {
 }
 
 char *svc_commit(void *helper, char *message) {
-    printf("svc_commit\n");
+    printf("svc_commit with message [%s]\n", message);
     check_modification(helper);
     char *hex = calc_cmt_id(helper, message);
     if (hex == NULL) {
@@ -267,7 +267,7 @@ char *svc_commit(void *helper, char *message) {
 }
 
 void *get_commit(void *helper, char *commit_id) {
-    printf("get_commit\n");
+    printf("get_commit with id [%s]\n", commit_id);
 
     if (commit_id == NULL) {
         return NULL;
@@ -287,7 +287,7 @@ void *get_commit(void *helper, char *commit_id) {
 }
 
 char **get_prev_commits(void *helper, void *commit, int *n_prev) {
-    printf("get_prev_commit\n");
+
 
     helper = NULL;
     if (n_prev == NULL) {
@@ -298,6 +298,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
         return NULL;
     }
     struct commit *cmt = (struct commit *) commit;
+    printf("get_prev_commit with id[%s]\n", cmt->commit_id);
     *n_prev = cmt->n_parent;
     if (*n_prev == 0){
         return NULL;
@@ -311,7 +312,7 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
 }
 
 void print_commit(void *helper, char *commit_id) {
-    printf("print_commit\n");
+    printf("print_commit with id [%s]\n", commit_id);
 
     struct commit *commit = (struct commit *) get_commit(helper, commit_id);
     if (commit == NULL) {
@@ -345,7 +346,7 @@ void print_commit(void *helper, char *commit_id) {
 }
 
 int svc_branch(void *helper, char *branch_name) {
-    printf("svc_branch\n");
+    printf("svc_branch with name [%s]\n", branch_name);
 
     if (branch_name == NULL) {
         return -1;
@@ -412,7 +413,7 @@ int svc_branch(void *helper, char *branch_name) {
 }
 
 int svc_checkout(void *helper, char *branch_name) {
-    printf("svc_checkout\n");
+    printf("svc_checkout with name [%s]\n", branch_name);
 
     if (branch_name == NULL) {
         return -1;
@@ -453,7 +454,7 @@ char **list_branches(void *helper, int *n_branches) {
 }
 
 int svc_add(void *helper, char *file_name) {
-    printf("svc_add\n");
+    printf("svc_add with file_path [%s]\n", file_name);
 
 
     struct helper *help = (struct helper *) helper;
@@ -496,7 +497,7 @@ int svc_add(void *helper, char *file_name) {
 }
 
 int svc_rm(void *helper, char *file_name) {
-    printf("svc_rm\n");
+    printf("svc_rm with file_path [%s]\n", file_name);
 
     if (file_name == NULL) {
         return -1;
@@ -518,7 +519,7 @@ int svc_rm(void *helper, char *file_name) {
 }
 
 int svc_reset(void *helper, char *commit_id) {
-    printf("svc_reset\n");
+    printf("svc_reset to id [%s]\n", commit_id);
 
     if (commit_id == NULL) {
         return -1;
@@ -567,7 +568,7 @@ int svc_reset(void *helper, char *commit_id) {
 }
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
-    printf("svc_merge\n");
+    printf("svc_merge with branch_name [%s]\n", branch_name);
 
     struct helper *help = (struct helper *) helper;
     if (branch_name == NULL) {
