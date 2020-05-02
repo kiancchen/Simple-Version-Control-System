@@ -647,6 +647,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                 found = TRUE;
                 if (file->hash != m_f->hash) {
                     for (int k = 0; k < n_resolutions; ++k) {
+                        if (resolutions[k].resolved_file == NULL || resolutions[k].file_name == NULL) {
+                            continue;
+                        }
                         // look for the resolution for this conflicting file
                         if (strcmp(resolutions[k].file_name, file->file_path) == 0) {
                             long size = file_length(resolutions[k].file_name);
@@ -661,7 +664,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                             free(file->content);
                             file->content = NULL;
                             file->content = strdup(content);
-                            file->chg_type = 0;
+                            file->chg_type = 2;
                             file->hash = hash_file(helper, file->file_path);
                             break;
                         }
