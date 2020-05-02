@@ -457,7 +457,9 @@ char **list_branches(void *helper, int *n_branches) {
 }
 
 int svc_add(void *helper, char *file_name) {
-    printf("svc_add with file_path [%s]\n", file_name);
+    if (CHECK){
+        printf("svc_add with file_path [%s]\n", file_name);
+    }
 
 
     struct helper *help = (struct helper *) helper;
@@ -468,9 +470,9 @@ int svc_add(void *helper, char *file_name) {
         return -1;
     }
 
-    if (branch_has_file(helper, file_name)) {
-        return -2;
-    }
+//    if (branch_has_file(helper, file_name)) {
+//        return -2;
+//    }
 
     // get the length of the file
     long size = file_length(file_name);
@@ -503,8 +505,9 @@ int svc_add(void *helper, char *file_name) {
 }
 
 int svc_rm(void *helper, char *file_name) {
-    printf("svc_rm with file_path [%s]\n", file_name);
-
+    if (CHECK){
+        printf("svc_rm with file_path [%s]\n", file_name);
+    }
     if (file_name == NULL) {
         return -1;
     }
@@ -525,8 +528,9 @@ int svc_rm(void *helper, char *file_name) {
 }
 
 int svc_reset(void *helper, char *commit_id) {
-    printf("svc_reset to id [%s]\n", commit_id);
-
+    if (CHECK){
+        printf("svc_reset to id [%s]\n", commit_id);
+    }
     if (commit_id == NULL) {
         return -1;
     }
@@ -574,8 +578,9 @@ int svc_reset(void *helper, char *commit_id) {
 }
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
-    printf("svc_merge with branch_name [%s]\n", branch_name);
-
+    if (CHECK){
+        printf("svc_merge with branch_name [%s]\n", branch_name);
+    }
     struct helper *help = (struct helper *) helper;
     if (branch_name == NULL) {
         printf("Invalid branch message\n");
