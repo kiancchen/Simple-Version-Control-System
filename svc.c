@@ -157,10 +157,8 @@ char *calc_cmt_id(void *helper, char *message) {
     struct branch *cur_br = help->cur_branch;
     // calculate the commit_id
     int id = 0;
-    for (char *c = message; *c != '\0'; ++c) {
-        unsigned char *uc = (unsigned char *) c;
-        int a = *uc;
-        id = (id + a) % 1000;
+    for (unsigned char *c = (unsigned char *)message; *c != '\0'; ++c) {
+        id = (id + *c) % 1000;
     }
     sort_files(helper);
     struct file **files = cur_br->stage;
@@ -178,11 +176,10 @@ char *calc_cmt_id(void *helper, char *message) {
         } else {
             id += 9573681;
         }
-        for (char *c = file->file_path; *c != '\0'; ++c) {
-            unsigned char *uc = (unsigned char *) c;
-            int a = *uc;
-            id = (id * (a % 37)) % 15485863 + 1;
+        for (unsigned char *c = (unsigned char *)(file->file_path); *c != '\0'; ++c) {
+            id = (id * (*c % 37)) % 15485863 + 1;
         }
+
     }
     if (n_changes == 0) {
         return NULL;
