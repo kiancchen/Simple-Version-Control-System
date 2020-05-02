@@ -128,10 +128,11 @@ int hash_file(void *helper, char *file_path) {
     if (!read_file(content, file_path, size)) {
         return -2;
     }
+    content[size] = '\0';
 
     // calculate the hash value
     int hash = 0;
-    printf("%s\n", content);
+
     for (char *c = file_path; *c != '\0'; c++) {
         unsigned char *uc = (unsigned char *)c;
         int a = *uc;
