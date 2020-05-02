@@ -68,7 +68,7 @@ long file_length(char *file_path) {
 }
 
 int read_file(char *content, char *file_path, size_t size) {
-    FILE *f = fopen(file_path, "r");
+    FILE *f = fopen(file_path, "rb+");
     if (f == NULL) {
         // if no file exists at the given file_path
         return FALSE;
@@ -129,7 +129,6 @@ int hash_file(void *helper, char *file_path) {
         return -2;
     }
     content[size] = '\0';
-
     // calculate the hash value
     int hash = 0;
 
