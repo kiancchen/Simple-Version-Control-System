@@ -438,6 +438,7 @@ char **list_branches(void *helper, int *n_branches) {
 }
 
 int svc_add(void *helper, char *file_name) {
+    printf("%s\n", file_name);
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
     if (helper == NULL || file_name == NULL) {
@@ -447,7 +448,10 @@ int svc_add(void *helper, char *file_name) {
     if (branch_has_file(helper, file_name)) {
         return -2;
     }
+
+    // get the length of the file
     long size = file_length(file_name);
+    // if file not found
     if (size == -1) {
         return -3;
     }
