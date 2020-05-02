@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 0
+#define CHECK 1
 #define PC 0
 
 
@@ -558,6 +558,7 @@ int svc_reset(void *helper, char *commit_id) {
     if (CHECK) {
         printf("svc_reset to id [%s]\n", commit_id);
     }
+    return 0;
     if (commit_id == NULL) {
         return -1;
     }
