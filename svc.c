@@ -598,7 +598,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
 
     struct helper *help = (struct helper *) helper;
     if (branch_name == NULL) {
-        printf("Invalid branch message\n");
+        printf("Invalid branch name\n");
         return NULL;
     }
     // look for the branch
