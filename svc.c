@@ -274,7 +274,10 @@ char *svc_commit(void *helper, char *message) {
 }
 
 void *get_commit(void *helper, char *commit_id) {
-    printf("get_commit with id [%s]\n", commit_id);
+    if (CHECK){
+        printf("get_commit with id [%s]\n", commit_id);
+    }
+
 
     if (commit_id == NULL) {
         return NULL;
@@ -294,8 +297,6 @@ void *get_commit(void *helper, char *commit_id) {
 }
 
 char **get_prev_commits(void *helper, void *commit, int *n_prev) {
-
-
     helper = NULL;
     if (n_prev == NULL) {
         return NULL;
@@ -305,7 +306,9 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
         return NULL;
     }
     struct commit *cmt = (struct commit *) commit;
-    printf("get_prev_commit with id[%s]\n", cmt->commit_id);
+    if (CHECK){
+        printf("get_prev_commit with id[%s]\n", cmt->commit_id);
+    }
     *n_prev = cmt->n_parent;
     if (*n_prev == 0){
         return NULL;
