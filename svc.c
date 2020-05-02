@@ -662,6 +662,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                             fputs(content, fp);
                             fclose(fp);
                             free(file->content);
+                            if (PC) printf("Resolution: {%s}\n", content);
                             file->content = NULL;
                             file->content = strdup(content);
                             file->chg_type = 2;
