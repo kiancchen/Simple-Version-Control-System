@@ -354,7 +354,7 @@ void print_commit(void *helper, char *commit_id) {
         }
         printf("    %c %s\n", sign, file->file_path);
     }
-    printf("\n    Tracked files (%d):\n", commit->n_files);
+    printf("\n    Tracked files (%d):\n", commit->n_files - commit->detached);
     for (int i = 0; i < commit->n_files; ++i) {
         struct file *file = commit->files[i];
         if (file->chg_type != -1) {
