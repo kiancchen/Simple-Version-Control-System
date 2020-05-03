@@ -56,8 +56,6 @@ struct helper {
     int capacity_br;
 };
 
-char *calc_cmt_id(void *helper, char *message);
-
 void *svc_init(void);
 
 void cleanup(void *helper);

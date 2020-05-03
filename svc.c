@@ -1,14 +1,15 @@
 #include "svc.h"
 
+// copy files from src to dist
+int files_copy(struct file **dist, struct file **src, int n_files) {
 
-int files_copy(struct file **dist, struct file **stage, int n_files) {
     int tracked_file = 0;
     for (int i = 0; i < n_files; ++i) {
         struct file *file = malloc(sizeof(struct file));
-        file->file_path = strdup(stage[i]->file_path);
-        file->content = strdup(stage[i]->content);
-        file->hash = stage[i]->hash;
-        file->chg_type = stage[i]->chg_type;
+        file->file_path = strdup(src[i]->file_path);
+        file->content = strdup(src[i]->content);
+        file->hash = src[i]->hash;
+        file->chg_type = src[i]->chg_type;
         dist[i] = file;
         if (file->chg_type >= 0) {
             tracked_file++;
@@ -17,6 +18,7 @@ int files_copy(struct file **dist, struct file **stage, int n_files) {
     return tracked_file;
 }
 
+// make stage to 0 when not removing. 02 when removing
 void restore_change(struct file **stage, int n_files) {
     for (int i = 0; i < n_files; ++i) {
         struct file *file = stage[i];
@@ -28,6 +30,7 @@ void restore_change(struct file **stage, int n_files) {
     }
 }
 
+// sort files in ascending alphabetically
 void sort_files(void *helper) {
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
@@ -46,6 +49,7 @@ void sort_files(void *helper) {
     }
 }
 
+// get the length of a file
 long file_length(char *file_path) {
     FILE *f = fopen(file_path, "r");
     if (f == NULL) {
@@ -59,6 +63,7 @@ long file_length(char *file_path) {
     return size;
 }
 
+// get the content of a file
 int read_file(char *content, char *file_path, size_t size) {
     FILE *f = fopen(file_path, "rb+");
     if (f == NULL) {
@@ -75,6 +80,7 @@ int read_file(char *content, char *file_path, size_t size) {
 
 }
 
+// init the stage of master
 void init_stage(void *helper) {
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
@@ -83,7 +89,7 @@ void init_stage(void *helper) {
     cur_br->n_files = 0;
 }
 
-
+// init the helper
 void *svc_init(void) {
     struct helper *helper = malloc(sizeof(struct helper));
     // init branches
@@ -108,7 +114,7 @@ void *svc_init(void) {
     return helper;
 }
 
-
+// calculate the hash value
 int hash_file(void *helper, char *file_path) {
     helper = NULL;
     if (file_path == NULL) {
@@ -138,6 +144,7 @@ int hash_file(void *helper, char *file_path) {
     return hash;
 }
 
+// calculate the commit id
 char *calc_cmt_id(void *helper, char *message) {
     if (message == NULL) {
         return NULL;
@@ -180,6 +187,7 @@ char *calc_cmt_id(void *helper, char *message) {
     return hex;
 }
 
+// make a commit and add to current branch
 int add_commit(void *helper, char *id, char *message) {
     struct helper *help = (struct helper *) helper;
     if (id == NULL) {
@@ -219,7 +227,7 @@ int add_commit(void *helper, char *id, char *message) {
     return 1;
 }
 
-
+// check if there're any changes made by user
 void check_changes(void *helper, int check_modification) {
     struct helper *help = (struct helper *) helper;
 
@@ -252,6 +260,7 @@ void check_changes(void *helper, int check_modification) {
     }
 }
 
+//  commit to current branch
 char *svc_commit(void *helper, char *message) {
     check_changes(helper, TRUE);
 
@@ -265,6 +274,7 @@ char *svc_commit(void *helper, char *message) {
 
 }
 
+// get the pointer to a commit by its id
 void *get_commit(void *helper, char *commit_id) {
     if (commit_id == NULL) {
         return NULL;
@@ -283,6 +293,7 @@ void *get_commit(void *helper, char *commit_id) {
     return NULL;
 }
 
+// get the previous commit
 char **get_prev_commits(void *helper, void *commit, int *n_prev) {
     helper = NULL;
     if (n_prev == NULL) {
@@ -342,6 +353,7 @@ void print_commit(void *helper, char *commit_id) {
 
 }
 
+// copy a commit
 void commit_copy(struct commit *dist, struct commit *src, char *branch_name) {
     dist->br_name = strdup(branch_name);
     dist->message = strdup(src->message);
@@ -358,6 +370,7 @@ void commit_copy(struct commit *dist, struct commit *src, char *branch_name) {
     files_copy(dist->files, src->files, dist->n_files);
 }
 
+// make a new branch
 int svc_branch(void *helper, char *branch_name) {
 
     if (branch_name == NULL) {
@@ -415,6 +428,7 @@ int svc_branch(void *helper, char *branch_name) {
     return 0;
 }
 
+// change the head to the specific branch
 int svc_checkout(void *helper, char *branch_name) {
     if (branch_name == NULL) {
         return -1;
