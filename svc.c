@@ -453,6 +453,13 @@ int svc_checkout(void *helper, char *branch_name) {
         return -1;
     }
     struct helper *help = (struct helper *) helper;
+    if (CHECK) {
+        for (int l = 0; l < help->cur_branch->n_files; ++l) {
+            struct file *file = help->cur_branch->stage[l];
+            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+        }
+    }
+
     // If some changes are not committed
     for (int i = 0; i < help->cur_branch->n_files; ++i) {
         int chg_type = help->cur_branch->stage[i]->chg_type;
