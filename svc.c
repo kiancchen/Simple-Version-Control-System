@@ -631,7 +631,7 @@ int svc_reset(void *helper, char *commit_id) {
 
 char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions, int n_resolutions) {
     if (CHECK) {
-        printf("svc_merge with branch_name [%s] with %d resolutions\n", branch_name, n_resolutions);
+        printf("svc_merge with branch_name [%s] with %d resolutions [%p]\n", branch_name, n_resolutions, resolutions);
         for (int i = 0; i < n_resolutions; ++i) {
             struct resolution resolution = resolutions[i];
             printf("Conflicting file: %s\n", resolution.file_name);
@@ -716,7 +716,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         break;
                     }
                 }
-                if (delete && file->chg_type >= 0 && resolutions->file_name == NULL){
+                if (delete && file->chg_type >= 0 && resolutions == NULL){
                     file->chg_type = -2;
                 }
 
