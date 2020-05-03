@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 
@@ -363,6 +363,22 @@ void print_commit(void *helper, char *commit_id) {
 
 }
 
+void commit_copy(struct commit* dist, struct commit* src, char * branch_name){
+    dist->br_name = strdup(branch_name);
+    dist->message = strdup(src->message);
+    dist->commit_id = strdup(src->commit_id);
+    dist->n_files = src->n_files;
+    dist->tracked_files = src->tracked_files;
+    dist->parent = malloc(sizeof(char *) * 2);
+    dist->n_parent = src->n_parent;
+    for (int j = 0; j < dist->n_parent; ++j) {
+        dist->parent[j] = src->parent[j];
+    }
+    dist->detached = src->detached;
+    dist->files = malloc(sizeof(struct file *) * src->n_files);
+    files_copy(src->files, src->files, src->n_files);
+}
+
 int svc_branch(void *helper, char *branch_name) {
     if (CHECK) {
         printf("svc_branch with name [%s]\n", branch_name);
@@ -414,19 +430,21 @@ int svc_branch(void *helper, char *branch_name) {
     branch->commits = malloc(sizeof(struct commit *) * branch->capacity_commit);
     for (int i = 0; i < branch->n_commits; ++i) {
         branch->commits[i] = malloc(sizeof(struct commit));
-        branch->commits[i]->br_name = strdup(branch_name);
-        branch->commits[i]->message = strdup(cur_br->commits[i]->message);
-        branch->commits[i]->commit_id = strdup(cur_br->commits[i]->commit_id);
-        branch->commits[i]->n_files = cur_br->commits[i]->n_files;
-        branch->commits[i]->tracked_files = cur_br->commits[i]->tracked_files;
-        branch->commits[i]->parent = malloc(sizeof(char *) * 2);
-        branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
-        for (int j = 0; j < branch->commits[i]->n_parent; ++j) {
-            branch->commits[i]->parent[j] = cur_br->commits[i]->parent[j];
-        }
-        branch->commits[i]->detached = cur_br->commits[i]->detached;
-        branch->commits[i]->files = malloc(sizeof(struct file *) * branch->commits[i]->n_files);
-        files_copy(branch->commits[i]->files, cur_br->commits[i]->files, branch->commits[i]->n_files);
+        commit_copy(branch->commits[i], cur_br->commits[i], branch_name);
+
+//        branch->commits[i]->br_name = strdup(branch_name);
+//        branch->commits[i]->message = strdup(cur_br->commits[i]->message);
+//        branch->commits[i]->commit_id = strdup(cur_br->commits[i]->commit_id);
+//        branch->commits[i]->n_files = cur_br->commits[i]->n_files;
+//        branch->commits[i]->tracked_files = cur_br->commits[i]->tracked_files;
+//        branch->commits[i]->parent = malloc(sizeof(char *) * 2);
+//        branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
+//        for (int j = 0; j < branch->commits[i]->n_parent; ++j) {
+//            branch->commits[i]->parent[j] = cur_br->commits[i]->parent[j];
+//        }
+//        branch->commits[i]->detached = cur_br->commits[i]->detached;
+//        branch->commits[i]->files = malloc(sizeof(struct file *) * branch->commits[i]->n_files);
+//        files_copy(branch->commits[i]->files, cur_br->commits[i]->files, branch->commits[i]->n_files);
 
     }
     branch->n_detached = 0;
@@ -745,8 +763,21 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     char *cmt_id = svc_commit(helper, message);
     cur_br->commits[cur_br->n_commits - 1]->n_parent = 2;
     cur_br->commits[cur_br->n_commits - 1]->parent[1] = merged_br->head->commit_id;
+
+    if (merged_br->n_commits >= merged_br->capacity_commit) {
+        merged_br->capacity_commit *= 2;
+        merged_br->commits = realloc(merged_br->commits, sizeof(struct commit*) * merged_br->capacity_commit);
+    }
+    merged_br->commits[merged_br->n_commits] = malloc(sizeof(struct commit));
+    commit_copy(merged_br->commits[merged_br->n_commits], cur_br->commits[cur_br->n_commits - 1], merged_br->name);
+    files_copy(merged_br->stage, cur_br->stage, cur_br->n_files);
+    merged_br->n_files = cur_br->n_files;
+    restore_change(merged_br->stage, merged_br->n_files);
+    merged_br->head = merged_br->commits[merged_br->n_commits];
+    merged_br->n_commits++;
     printf("Merge successful\n");
     return cmt_id;
+
 }
 
 void cleanup(void *helper) {
