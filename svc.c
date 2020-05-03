@@ -732,8 +732,11 @@ void cleanup(void *helper) {
             commit->br_name = NULL;
             free(commit->commit_id);
             commit->commit_id = NULL;
-            free(commit->parent);
-            commit->parent = NULL;
+            if (commit->parent == NULL){
+                free(commit->parent);
+                commit->parent = NULL;
+            }
+
             free(commit);
             commit = NULL;
         }
