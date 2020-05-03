@@ -1,7 +1,7 @@
 #include "svc.h"
 
 #define CHECK 1
-#define PC 0
+#define PC 1
 
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -559,6 +559,7 @@ int svc_reset(void *helper, char *commit_id) {
         printf("svc_reset to id [%s]\n", commit_id);
     }
     return 0;
+
     if (commit_id == NULL) {
         return -1;
     }
@@ -601,7 +602,6 @@ int svc_reset(void *helper, char *commit_id) {
         commit->detached = TRUE;
         cur_br->n_detached++;
     }
-
     return 0;
 }
 
