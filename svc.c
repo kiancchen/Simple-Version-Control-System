@@ -711,6 +711,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         char content[size + 1];
                         read_file(content, resolutions[k].resolved_file, size);
                         fclose(fp);
+                        content[size] = '\0';
                         fp = fopen(file->file_path, "w");
                         fputs(content, fp);
                         fclose(fp);
@@ -725,7 +726,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                 }
                 if (!hasRes && file->hash != 2027) {
 
-                        file->chg_type = -2;
+                    file->chg_type = -2;
 
                 }
             }
