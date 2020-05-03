@@ -771,6 +771,13 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     restore_change(merged_br->stage, merged_br->n_files);
     merged_br->head = merged_br->commits[merged_br->n_commits];
     merged_br->n_commits++;
+    if (CHECK) {
+        for (int l = 0; l < cur_br->n_files; ++l) {
+            struct file *file = merged_br->stage[l];
+            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+        }
+    }
+
     printf("Merge successful\n");
     return cmt_id;
 
