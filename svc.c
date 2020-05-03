@@ -686,10 +686,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         break;
                     }
                 }
+                // if conflicting files do not in resolutions, delete them
                 if (!hasRes && file->hash != 2027) {
-
                     file->chg_type = -2;
-
                 }
             }
         }
