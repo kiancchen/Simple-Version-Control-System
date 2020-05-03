@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 0
+#define CHECK 1
 #define PC 0
 
 
@@ -728,8 +728,6 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                     if (file->hash != m_f->hash){
                         file->chg_type = -2;
                     }
-
-
                 }
             }
         }
