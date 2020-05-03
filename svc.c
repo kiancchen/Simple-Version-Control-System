@@ -453,12 +453,7 @@ int svc_checkout(void *helper, char *branch_name) {
         return -1;
     }
     struct helper *help = (struct helper *) helper;
-    if (CHECK) {
-        for (int l = 0; l < help->cur_branch->n_files; ++l) {
-            struct file *file = help->cur_branch->stage[l];
-            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
-        }
-    }
+
 
     // If some changes are not committed
     for (int i = 0; i < help->cur_branch->n_files; ++i) {
@@ -471,7 +466,21 @@ int svc_checkout(void *helper, char *branch_name) {
     for (int i = 0; i < help->n_branches; ++i) {
         if (strcmp(help->branches[i]->name, branch_name) == 0) {
             help->cur_branch = help->branches[i];
+            if (CHECK) {
+                printf("Before check\n");
+                for (int l = 0; l < help->cur_branch->n_files; ++l) {
+                    struct file *file = help->cur_branch->stage[l];
+                    printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+                }
+            }
             check_changes(helper, FALSE);
+            if (CHECK) {
+                printf("After check\n");
+                for (int l = 0; l < help->cur_branch->n_files; ++l) {
+                    struct file *file = help->cur_branch->stage[l];
+                    printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+                }
+            }
             // if a file is deleted manually, restore it.
             for (int j = 0; j < help->cur_branch->n_files; ++j) {
                 struct file *file = help->cur_branch->stage[j];
