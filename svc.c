@@ -189,7 +189,7 @@ int add_commit(void *helper, char *id, char *message) {
         return -1;
     }
     struct branch *cur_br = help->cur_branch;
-    int a= 0;
+
 
     if (cur_br->n_commits == cur_br->capacity_commit) {
         cur_br->capacity_commit *= 2;
