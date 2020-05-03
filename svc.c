@@ -696,7 +696,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                 int delete = TRUE;
                 if (file->hash == m_f->hash) {
                     delete = FALSE;
-                    continue;
+                    break;
                 }
                 for (int k = 0; k < n_resolutions; ++k) {
                     if (resolutions[k].resolved_file == NULL || resolutions[k].file_name == NULL) {
