@@ -430,21 +430,21 @@ int svc_branch(void *helper, char *branch_name) {
     branch->commits = malloc(sizeof(struct commit *) * branch->capacity_commit);
     for (int i = 0; i < branch->n_commits; ++i) {
         branch->commits[i] = malloc(sizeof(struct commit));
-        commit_copy(branch->commits[i], cur_br->commits[i], branch_name);
+//        commit_copy(branch->commits[i], cur_br->commits[i], branch_name);
 
-//        branch->commits[i]->br_name = strdup(branch_name);
-//        branch->commits[i]->message = strdup(cur_br->commits[i]->message);
-//        branch->commits[i]->commit_id = strdup(cur_br->commits[i]->commit_id);
-//        branch->commits[i]->n_files = cur_br->commits[i]->n_files;
-//        branch->commits[i]->tracked_files = cur_br->commits[i]->tracked_files;
-//        branch->commits[i]->parent = malloc(sizeof(char *) * 2);
-//        branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
-//        for (int j = 0; j < branch->commits[i]->n_parent; ++j) {
-//            branch->commits[i]->parent[j] = cur_br->commits[i]->parent[j];
-//        }
-//        branch->commits[i]->detached = cur_br->commits[i]->detached;
-//        branch->commits[i]->files = malloc(sizeof(struct file *) * branch->commits[i]->n_files);
-//        files_copy(branch->commits[i]->files, cur_br->commits[i]->files, branch->commits[i]->n_files);
+        branch->commits[i]->br_name = strdup(branch_name);
+        branch->commits[i]->message = strdup(cur_br->commits[i]->message);
+        branch->commits[i]->commit_id = strdup(cur_br->commits[i]->commit_id);
+        branch->commits[i]->n_files = cur_br->commits[i]->n_files;
+        branch->commits[i]->tracked_files = cur_br->commits[i]->tracked_files;
+        branch->commits[i]->parent = malloc(sizeof(char *) * 2);
+        branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
+        for (int j = 0; j < branch->commits[i]->n_parent; ++j) {
+            branch->commits[i]->parent[j] = cur_br->commits[i]->parent[j];
+        }
+        branch->commits[i]->detached = cur_br->commits[i]->detached;
+        branch->commits[i]->files = malloc(sizeof(struct file *) * branch->commits[i]->n_files);
+        files_copy(branch->commits[i]->files, cur_br->commits[i]->files, branch->commits[i]->n_files);
 
     }
     branch->n_detached = 0;
