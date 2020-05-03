@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 
@@ -663,11 +663,13 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         return NULL;
     }
     struct branch *cur_br = help->cur_branch;
-
-   for (int l = 0; l < cur_br->n_files; ++l) {
-        struct file* file = cur_br->stage[l];
-        printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
-    } // check if there's changes uncommitted
+    if (CHECK) {
+        for (int l = 0; l < cur_br->n_files; ++l) {
+            struct file* file = cur_br->stage[l];
+            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+        }
+    }
+    // check if there's changes uncommitted
     check_changes(helper, FALSE);
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
@@ -723,10 +725,13 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             svc_add(helper, m_f->file_path);
         }
     }
-    for (int l = 0; l < cur_br->n_files; ++l) {
-        struct file* file = cur_br->stage[l];
-        printf("name[%s] chg[%d]", file->file_path, file->chg_type);
+    if (CHECK){
+        for (int l = 0; l < cur_br->n_files; ++l) {
+            struct file* file = cur_br->stage[l];
+            printf("name[%s] chg[%d]", file->file_path, file->chg_type);
+        }
     }
+
     char *cmt_id = svc_commit(helper, message);
     cur_br->commits[cur_br->n_commits - 1]->n_parent = 2;
     cur_br->commits[cur_br->n_commits - 1]->parent[1] = merged_br->head->commit_id;
