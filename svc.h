@@ -18,7 +18,9 @@ struct file {
     char *file_path;
     char *content;
     int hash;
-    int chg_type; // change of type: -2 for not tracking; -1 for deletion; 0 for no changes; 1 for addition; 2 for modification
+    int chg_type; // change of type:
+    // -2 for not tracking; -1 for deletion;
+    // 0 for no changes; 1 for addition; 2 for modification; 3 for new adding and modified before committing
 };
 
 struct commit {

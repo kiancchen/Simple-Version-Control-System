@@ -240,9 +240,11 @@ void check_changes(void *helper, int check_modification) {
             }
             continue;
         }
-        if (check_modification && new_hash != file->hash && file->chg_type != 1) {
+        if (check_modification && new_hash != file->hash) {
             file->hash = new_hash;
-            file->chg_type = 2;
+            if (file->chg_type != 1){
+                file->chg_type = 2;
+            }
             long size = file_length(file->file_path);
             // read the file
             char content[size + 1];
