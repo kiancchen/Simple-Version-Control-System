@@ -409,8 +409,11 @@ int svc_branch(void *helper, char *branch_name) {
         branch->commits[i]->message = strdup(cur_br->commits[i]->message);
         branch->commits[i]->commit_id = strdup(cur_br->commits[i]->commit_id);
         branch->commits[i]->n_files = cur_br->commits[i]->n_files;
-        branch->commits[i]->parent = cur_br->commits[i]->parent;
+        branch->commits[i]->parent = malloc(sizeof(char*) * 2);
         branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
+        for (int j = 0; j < branch->commits[i]->n_parent; ++j) {
+            branch->commits[i]->parent[j] = cur_br->commits[i]->parent[j];
+        }
         branch->commits[i]->detached = cur_br->commits[i]->detached;
         branch->commits[i]->files = malloc(sizeof(struct file *) * branch->commits[i]->n_files);
         files_copy(branch->commits[i]->files, cur_br->commits[i]->files, branch->commits[i]->n_files);
@@ -596,6 +599,7 @@ int svc_reset(void *helper, char *commit_id) {
     files_copy(cur_br->stage, cur_br->head->files, cur_br->head->n_files);
     restore_change(cur_br->stage, cur_br->n_files);
     cur_br->capacity_file = 8;
+
     // restore files
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
