@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 
@@ -328,6 +328,10 @@ void print_commit(void *helper, char *commit_id) {
         printf("Invalid commit id\n");
         return;
     }
+    for (int i = 0; i < commit->n_files; ++i) {
+        printf("Name: %s Change: %d\n", commit->files[i]->file_path, commit->files[i]->chg_type);
+    }
+
     printf("%s [%s]: %s\n", commit_id, commit->br_name, commit->message);
     for (int i = 0; i < commit->n_files; ++i) {
         struct file *file = commit->files[i];
