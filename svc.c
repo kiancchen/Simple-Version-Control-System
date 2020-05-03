@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 
@@ -497,8 +497,6 @@ int svc_checkout(void *helper, char *branch_name) {
                     if (file->chg_type != 0){
                         file->chg_type = 0;
                     }
-
-
                 }
 
             }
