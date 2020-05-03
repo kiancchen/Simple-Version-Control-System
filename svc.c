@@ -704,6 +704,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                     }
                     // look for the resolution for this conflicting file
                     if (strcmp(resolutions[k].file_name, file->file_path) == 0) {
+                        if (resolutions[k].resolved_file == NULL){
+                            break;
+                        }
                         delete = FALSE;
                         long size = file_length(resolutions[k].file_name);
                         FILE *fp = fopen(resolutions[k].file_name, "r");
