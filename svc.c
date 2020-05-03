@@ -716,7 +716,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         break;
                     }
                 }
-                if (delete && file->chg_type >= 0 && file->hash != m_f->hash){
+                if (delete && file->chg_type >= 0){
                     file->chg_type = -2;
                 }
 
