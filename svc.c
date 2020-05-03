@@ -764,17 +764,17 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     cur_br->commits[cur_br->n_commits - 1]->n_parent = 2;
     cur_br->commits[cur_br->n_commits - 1]->parent[1] = merged_br->head->commit_id;
 
-    if (merged_br->n_commits >= merged_br->capacity_commit) {
-        merged_br->capacity_commit *= 2;
-        merged_br->commits = realloc(merged_br->commits, sizeof(struct commit*) * merged_br->capacity_commit);
-    }
-    merged_br->commits[merged_br->n_commits] = malloc(sizeof(struct commit));
-    commit_copy(merged_br->commits[merged_br->n_commits], cur_br->commits[cur_br->n_commits - 1], merged_br->name);
-    files_copy(merged_br->stage, cur_br->stage, cur_br->n_files);
-    merged_br->n_files = cur_br->n_files;
-    restore_change(merged_br->stage, merged_br->n_files);
-    merged_br->head = merged_br->commits[merged_br->n_commits];
-    merged_br->n_commits++;
+//    if (merged_br->n_commits >= merged_br->capacity_commit) {
+//        merged_br->capacity_commit *= 2;
+//        merged_br->commits = realloc(merged_br->commits, sizeof(struct commit*) * merged_br->capacity_commit);
+//    }
+//    merged_br->commits[merged_br->n_commits] = malloc(sizeof(struct commit));
+//    commit_copy(merged_br->commits[merged_br->n_commits], cur_br->commits[cur_br->n_commits - 1], merged_br->name);
+//    files_copy(merged_br->stage, cur_br->stage, cur_br->n_files);
+//    merged_br->n_files = cur_br->n_files;
+//    restore_change(merged_br->stage, merged_br->n_files);
+//    merged_br->head = merged_br->commits[merged_br->n_commits];
+//    merged_br->n_commits++;
     printf("Merge successful\n");
     return cmt_id;
 
