@@ -685,6 +685,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     int n_files = cur_br->n_files;
     for (int i = 0; i < merged_br->n_files; ++i) {
         struct file *m_f = merged_br->stage[i];
+        if (m_f->chg_type < 0){
+            continue;
+        }
         int found = FALSE;
         for (int j = 0; j < n_files; ++j) {
             struct file *file = cur_br->stage[j];
