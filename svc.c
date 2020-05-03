@@ -434,19 +434,6 @@ int svc_branch(void *helper, char *branch_name) {
 
         commit_copy(branch->commits[i], cur_br->commits[i], branch_name);
 
-
-
-
-
-
-
-
-
-
-
-les);
-
-
     }
     branch->n_detached = 0;
     help->n_branches++;
