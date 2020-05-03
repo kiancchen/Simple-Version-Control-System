@@ -266,7 +266,7 @@ char *svc_commit(void *helper, char *message) {
     check_changes(helper, TRUE);
     char *hex = calc_cmt_id(helper, message);
     if (hex == NULL) {
-        return NULL;
+        return "No changes";
     }
     add_commit(helper, hex, message);
 
