@@ -23,7 +23,7 @@ int files_copy(struct file **dist, struct file **stage, int n_files) {
 void restore_change(struct file **stage, int n_files) {
     for (int i = 0; i < n_files; ++i) {
         struct file *file = stage[i];
-        if (file->chg_type == -1) {
+        if (file->chg_type == -1 || file->chg_type == -2) {
             file->chg_type = -2;
         } else {
             file->chg_type = 0;
@@ -560,7 +560,7 @@ int svc_reset(void *helper, char *commit_id) {
     if (CHECK) {
         printf("svc_reset to id [%s]\n", commit_id);
     }
-    return 0;
+
 
     if (commit_id == NULL) {
         return -1;
@@ -578,8 +578,8 @@ int svc_reset(void *helper, char *commit_id) {
     if (index == -1) {
         return -2;
     }
-    cur_br->head = cur_br->commits[index];
-    cur_br->n_files = cur_br->head->n_files;
+
+
     for (int i = 0; i < cur_br->n_files; ++i) {
         free(cur_br->stage[i]->content);
         cur_br->stage[i]->content = NULL;
@@ -588,6 +588,8 @@ int svc_reset(void *helper, char *commit_id) {
         free(cur_br->stage[i]);
         cur_br->stage[i] = NULL;
     }
+    cur_br->head = cur_br->commits[index];
+    cur_br->n_files = cur_br->head->n_files;
     files_copy(cur_br->stage, cur_br->head->files, cur_br->head->n_files);
     restore_change(cur_br->stage, cur_br->n_files);
     cur_br->capacity_file = cur_br->n_files * 2;
