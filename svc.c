@@ -733,7 +733,7 @@ void cleanup(void *helper) {
             free(commit->commit_id);
             commit->commit_id = NULL;
             free(commit->parent);
-            commit->parent = NULL;
+            branch->commits[j] = NULL;
             free(commit);
             commit = NULL;
         }
