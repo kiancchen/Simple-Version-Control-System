@@ -1,7 +1,7 @@
 #include "svc.h"
 
 #define CHECK 1
-#define PC 1
+#define PC 0
 
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -254,9 +254,8 @@ void check_changes(void *helper, int check_modification) {
 }
 
 char *svc_commit(void *helper, char *message) {
-    if (CHECK) {
-        printf("svc_commit with message [%s]\n", message);
-    }
+    if (CHECK) printf("svc_commit with message [%s] ", message);
+
 
     check_changes(helper, TRUE);
     char *hex = calc_cmt_id(helper, message);
@@ -264,6 +263,9 @@ char *svc_commit(void *helper, char *message) {
         return NULL;
     }
     add_commit(helper, hex, message);
+
+    if (CHECK) printf(" and id [%s]\n", hex);
+
     return hex;
 
 }
