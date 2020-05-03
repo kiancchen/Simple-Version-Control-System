@@ -189,6 +189,8 @@ int add_commit(void *helper, char *id, char *message) {
         return -1;
     }
     struct branch *cur_br = help->cur_branch;
+    int a= 0;
+
     if (cur_br->n_commits == cur_br->capacity_commit) {
         cur_br->capacity_commit *= 2;
         cur_br->commits = realloc(cur_br->commits, sizeof(struct commit *) * cur_br->capacity_commit);
@@ -216,6 +218,7 @@ int add_commit(void *helper, char *id, char *message) {
     cur_br->commits[cur_br->n_commits] = commit;
     cur_br->n_commits++;
     cur_br->head = commit;
+    print_commit(helper, commit->commit_id);
 
     return 1;
 }
@@ -660,11 +663,11 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         return NULL;
     }
     struct branch *cur_br = help->cur_branch;
-    for (int l = 0; l < cur_br->n_files; ++l) {
+
+   for (int l = 0; l < cur_br->n_files; ++l) {
         struct file* file = cur_br->stage[l];
-        printf("name[%s] chg[%d]", file->file_path, file->chg_type);
-    }
-    // check if there's changes uncommitted
+        printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+    } // check if there's changes uncommitted
     check_changes(helper, FALSE);
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
