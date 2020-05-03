@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 0
+#define CHECK 1
 #define PC 0
 
 
