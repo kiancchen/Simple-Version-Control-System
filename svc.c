@@ -480,7 +480,7 @@ int svc_add(void *helper, char *file_name) {
     if (CHECK) {
         printf("svc_add with file_path [%s]", file_name);
     }
-    return 0;
+
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
     if (cur_br->n_files > 0) {
@@ -514,6 +514,7 @@ int svc_add(void *helper, char *file_name) {
     char content[size + 1];
     read_file(content, file_name, size);
     if (PC) printf("{%s}\n", content);
+    return 0;
     // create a file object
     struct file *file = malloc(sizeof(struct file));
     file->file_path = strdup(file_name);
