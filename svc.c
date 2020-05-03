@@ -220,7 +220,6 @@ int add_commit(void *helper, char *id, char *message) {
 }
 
 
-
 void check_changes(void *helper, int check_modification) {
     struct helper *help = (struct helper *) helper;
 
@@ -315,7 +314,12 @@ char **get_prev_commits(void *helper, void *commit, int *n_prev) {
         parent[i] = cmt->parent[i];
     }
 
-    return parent;
+    char **copy = malloc(sizeof(char *) * *n_prev);
+    for (int i = 0; i < *n_prev; ++i) {
+        copy[i] = strdup(parent[i]);
+    }
+
+    return copy;
 }
 
 void print_commit(void *helper, char *commit_id) {
@@ -444,8 +448,8 @@ int svc_checkout(void *helper, char *branch_name) {
             check_changes(helper, FALSE);
             // if a file is deleted manually, restore it.
             for (int j = 0; j < help->cur_branch->n_files; ++j) {
-                struct file* file = help->cur_branch->stage[j];
-                if (file->chg_type == -1){
+                struct file *file = help->cur_branch->stage[j];
+                if (file->chg_type == -1) {
                     FILE *fp = fopen(file->file_path, "w");
                     fputs(file->content, fp);
                     fclose(fp);
@@ -599,7 +603,7 @@ int svc_reset(void *helper, char *commit_id) {
     // restore files
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
-        if (file->chg_type >= 0){
+        if (file->chg_type >= 0) {
             FILE *fp = fopen(file->file_path, "w");
             fputs(file->content, fp);
             fclose(fp);
@@ -732,11 +736,8 @@ void cleanup(void *helper) {
             commit->br_name = NULL;
             free(commit->commit_id);
             commit->commit_id = NULL;
-            if (commit->parent != NULL){
-                free(commit->parent);
-                commit->parent = NULL;
-            }
-
+            free(commit->parent);
+            commit->parent = NULL;
             free(commit);
             commit = NULL;
         }
