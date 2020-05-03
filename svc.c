@@ -596,9 +596,11 @@ int svc_reset(void *helper, char *commit_id) {
     // restore files
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
-        FILE *fp = fopen(file->file_path, "w");
-        fputs(file->content, fp);
-        fclose(fp);
+        if (file->chg_type >= 0){
+            FILE *fp = fopen(file->file_path, "w");
+            fputs(file->content, fp);
+            fclose(fp);
+        }
     }
     // detach commits afterwards
     for (int i = index + 1; i < cur_br->n_commits; ++i) {
