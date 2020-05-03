@@ -729,14 +729,15 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                             break;
                         }
                         hasRes = TRUE;
-                        long size = file_length(resolutions[k].file_name);
-                        FILE *fp = fopen(resolutions[k].file_name, "r");
+                        long size = file_length(resolutions[k].resolved_file);
+
                         // read the file
                         char content[size + 1];
                         read_file(content, resolutions[k].resolved_file, size);
-                        fclose(fp);
+
+
                         content[size] = '\0';
-                        fp = fopen(file->file_path, "w");
+                        FILE *fp = fopen(file->file_path, "w");
                         fputs(content, fp);
                         fclose(fp);
                         free(file->content);
