@@ -82,7 +82,7 @@ void init_stage(void *helper) {
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
     cur_br->stage = malloc(sizeof(struct file *) * 4);
-    cur_br->capacity_file = 4;
+    cur_br->capacity_file = 50;
     cur_br->n_files = 0;
 }
 
@@ -522,7 +522,7 @@ int svc_add(void *helper, char *file_name) {
     file->hash = hash;
     file->chg_type = 1; // change type is addition
     // add the file to stage
-    if (cur_br->n_files == cur_br->capacity_file) {
+    if (cur_br->n_files >= cur_br->capacity_file) {
         cur_br->capacity_file *= 2;
         cur_br->stage = realloc(cur_br->stage, cur_br->capacity_file);
     }
@@ -592,7 +592,7 @@ int svc_reset(void *helper, char *commit_id) {
     cur_br->n_files = cur_br->head->n_files;
     files_copy(cur_br->stage, cur_br->head->files, cur_br->head->n_files);
     restore_change(cur_br->stage, cur_br->n_files);
-    cur_br->capacity_file = cur_br->n_files * 2;
+    cur_br->capacity_file = 50;
     // restore files
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
