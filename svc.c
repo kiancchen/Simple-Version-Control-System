@@ -1,7 +1,7 @@
 #include "svc.h"
 
-#define CHECK 1
-#define PC 1
+#define CHECK 0
+#define PC 0
 
 
 int files_copy(struct file **dist, struct file **stage, int n_files) {
@@ -81,8 +81,8 @@ int read_file(char *content, char *file_path, size_t size) {
 void init_stage(void *helper) {
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
-    cur_br->stage = malloc(sizeof(struct file *) * 4);
-    cur_br->capacity_file = 50;
+    cur_br->stage = malloc(sizeof(struct file *) * 8);
+    cur_br->capacity_file = 8;
     cur_br->n_files = 0;
 }
 
@@ -90,8 +90,8 @@ void init_stage(void *helper) {
 void *svc_init(void) {
     struct helper *helper = malloc(sizeof(struct helper));
     // init branches
-    helper->branches = malloc(sizeof(struct branch *) * 4);
-    helper->capacity_br = 4;
+    helper->branches = malloc(sizeof(struct branch *) * 8);
+    helper->capacity_br = 8;
     helper->n_branches = 0;
 
     // init the master branch
@@ -100,9 +100,9 @@ void *svc_init(void) {
     helper->branches[0] = master;
     helper->n_branches++;
     helper->branches[0]->name = strdup("master");
-    master->commits = malloc(sizeof(struct commit *) * 4);
+    master->commits = malloc(sizeof(struct commit *) * 8);
     master->n_commits = 0;
-    master->capacity_commit = 4;
+    master->capacity_commit = 8;
     master->head = NULL;
     master->n_detached = 0;
 
@@ -515,7 +515,7 @@ int svc_add(void *helper, char *file_name) {
     read_file(content, file_name, size);
     content[size] = '\0';
     if (PC) printf("{%s}\n", content);
-    return 0;
+
     // create a file object
     struct file *file = malloc(sizeof(struct file));
     file->file_path = strdup(file_name);
@@ -595,7 +595,7 @@ int svc_reset(void *helper, char *commit_id) {
     cur_br->n_files = cur_br->head->n_files;
     files_copy(cur_br->stage, cur_br->head->files, cur_br->head->n_files);
     restore_change(cur_br->stage, cur_br->n_files);
-    cur_br->capacity_file = 50;
+    cur_br->capacity_file = 8;
     // restore files
     for (int i = 0; i < cur_br->n_files; ++i) {
         struct file *file = cur_br->stage[i];
@@ -623,7 +623,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             printf("Resolution file: %s\n", resolution.resolved_file);
         }
     }
-    return "aa";
+
 
     struct helper *help = (struct helper *) helper;
     if (branch_name == NULL) {
