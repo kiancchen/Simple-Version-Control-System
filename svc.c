@@ -260,13 +260,13 @@ void check_changes(void *helper, int check_modification) {
 }
 
 char *svc_commit(void *helper, char *message) {
-    if (CHECK) printf("svc_commit with message [%s] ", message);
+    if (CHECK) printf("svc_commit with message [%s] \n", message);
 
     if (CHECK) {
         struct helper *help = (struct helper *) helper;
         for (int l = 0; l < help->cur_branch->n_files; ++l) {
             struct file *file = help->cur_branch->stage[l];
-            printf("\nname[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
+            printf("name[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
         }
     }
     check_changes(helper, TRUE);
@@ -274,7 +274,7 @@ char *svc_commit(void *helper, char *message) {
         struct helper *help = (struct helper *) helper;
         for (int l = 0; l < help->cur_branch->n_files; ++l) {
             struct file *file = help->cur_branch->stage[l];
-            printf("\nname[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
+            printf("name[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
         }
     }
     char *hex = calc_cmt_id(helper, message);
@@ -490,12 +490,15 @@ int svc_checkout(void *helper, char *branch_name) {
             // if a file is deleted manually, restore it.
             for (int j = 0; j < help->cur_branch->n_files; ++j) {
                 struct file *file = help->cur_branch->stage[j];
-                FILE *fp = fopen(file->file_path, "w");
-                fputs(file->content, fp);
-                fclose(fp);
-                if (file->chg_type == -1){
-                    file->chg_type = 0;
+                if (file->chg_type == -1 || file->chg_type == 2){
+                    FILE *fp = fopen(file->file_path, "w");
+                    fputs(file->content, fp);
+                    fclose(fp);
+
+                        file->chg_type = 0;
+
                 }
+
             }
             return 0;
         }
