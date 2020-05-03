@@ -479,6 +479,7 @@ char **list_branches(void *helper, int *n_branches) {
     return br_names;
 }
 
+// add the file to stage in current branch
 int svc_add(void *helper, char *file_name) {
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
@@ -532,6 +533,7 @@ int svc_add(void *helper, char *file_name) {
     return hash;
 }
 
+// remove the file from stage of current branch
 int svc_rm(void *helper, char *file_name) {
     if (file_name == NULL) {
         return -1;
@@ -552,6 +554,7 @@ int svc_rm(void *helper, char *file_name) {
     return -2;
 }
 
+// restore all changes to a sepcific commit
 int svc_reset(void *helper, char *commit_id) {
     if (commit_id == NULL) {
         return -1;
