@@ -490,7 +490,7 @@ int svc_checkout(void *helper, char *branch_name) {
             // if a file is deleted manually, restore it.
             for (int j = 0; j < help->cur_branch->n_files; ++j) {
                 struct file *file = help->cur_branch->stage[j];
-                if (file->chg_type == -1 || file->chg_type == 2){
+                if (file->chg_type == -1 || file->chg_type == 2 ||file->chg_type == 0){
                     FILE *fp = fopen(file->file_path, "w");
                     fputs(file->content, fp);
                     fclose(fp);
