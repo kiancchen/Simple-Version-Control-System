@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 0
+#define CHECK 1
 #define PC 0
 
 
@@ -229,6 +229,7 @@ void check_changes(void *helper, int check_modification) {
     struct helper *help = (struct helper *) helper;
 
     for (int i = 0; i < help->cur_branch->n_files; ++i) {
+        if (CHECK) printf("n files %d\n", help->cur_branch->n_files);
         struct file *file = help->cur_branch->stage[i];
         if (file->chg_type < 0) {
             return;
