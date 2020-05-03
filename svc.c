@@ -687,12 +687,14 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             struct file *file = cur_br->stage[j];
             if (strcmp(file->file_path, m_f->file_path) == 0) {
                 found = TRUE;
+                int delete = TRUE;
                 for (int k = 0; k < n_resolutions; ++k) {
                     if (resolutions[k].resolved_file == NULL || resolutions[k].file_name == NULL) {
                         continue;
                     }
                     // look for the resolution for this conflicting file
                     if (strcmp(resolutions[k].file_name, file->file_path) == 0) {
+                        delete = FALSE;
                         long size = file_length(resolutions[k].file_name);
                         FILE *fp = fopen(resolutions[k].file_name, "r");
                         // read the file
@@ -710,6 +712,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         file->hash = hash_file(helper, file->file_path);
                         break;
                     }
+                }
+                if (delete){
+                    file->chg_type = -1;
                 }
 
             }
