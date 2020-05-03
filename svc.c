@@ -713,7 +713,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         break;
                     }
                 }
-                if (delete){
+                if (delete && file->chg_type >= 0){
                     file->chg_type = -1;
                 }
 
