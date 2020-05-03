@@ -266,7 +266,7 @@ char *svc_commit(void *helper, char *message) {
         struct helper *help = (struct helper *) helper;
         for (int l = 0; l < help->cur_branch->n_files; ++l) {
             struct file *file = help->cur_branch->stage[l];
-            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+            printf("\nname[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
         }
     }
     check_changes(helper, TRUE);
@@ -274,7 +274,7 @@ char *svc_commit(void *helper, char *message) {
         struct helper *help = (struct helper *) helper;
         for (int l = 0; l < help->cur_branch->n_files; ++l) {
             struct file *file = help->cur_branch->stage[l];
-            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+            printf("\nname[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
         }
     }
     char *hex = calc_cmt_id(helper, message);
@@ -476,7 +476,7 @@ int svc_checkout(void *helper, char *branch_name) {
                 printf("Before check\n");
                 for (int l = 0; l < help->cur_branch->n_files; ++l) {
                     struct file *file = help->cur_branch->stage[l];
-                    printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+                    printf("name[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
                 }
             }
             check_changes(helper, FALSE);
@@ -484,7 +484,7 @@ int svc_checkout(void *helper, char *branch_name) {
                 printf("After check\n");
                 for (int l = 0; l < help->cur_branch->n_files; ++l) {
                     struct file *file = help->cur_branch->stage[l];
-                    printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+                    printf("name[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
                 }
             }
             // if a file is deleted manually, restore it.
@@ -496,7 +496,6 @@ int svc_checkout(void *helper, char *branch_name) {
                 if (file->chg_type == -1){
                     file->chg_type = 0;
                 }
-
             }
             return 0;
         }
