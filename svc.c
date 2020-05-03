@@ -23,7 +23,7 @@ int files_copy(struct file **dist, struct file **stage, int n_files) {
 void restore_change(struct file **stage, int n_files) {
     for (int i = 0; i < n_files; ++i) {
         struct file *file = stage[i];
-        if (file->chg_type == -1 || file->chg_type == -2) {
+        if (file->chg_type == -1) {
             file->chg_type = -2;
         } else {
             file->chg_type = 0;
