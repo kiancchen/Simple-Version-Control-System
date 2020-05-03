@@ -218,7 +218,8 @@ int add_commit(void *helper, char *id, char *message) {
     cur_br->commits[cur_br->n_commits] = commit;
     cur_br->n_commits++;
     cur_br->head = commit;
-    print_commit(helper, commit->commit_id);
+    if (CHECK) print_commit(helper, commit->commit_id);
+
 
     return 1;
 }
