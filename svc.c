@@ -414,6 +414,7 @@ int svc_branch(void *helper, char *branch_name) {
         branch->commits[i]->message = strdup(cur_br->commits[i]->message);
         branch->commits[i]->commit_id = strdup(cur_br->commits[i]->commit_id);
         branch->commits[i]->n_files = cur_br->commits[i]->n_files;
+        branch->commits[i]->tracked_files = cur_br->commits[i]->tracked_files;
         branch->commits[i]->parent = malloc(sizeof(char*) * 2);
         branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
         for (int j = 0; j < branch->commits[i]->n_parent; ++j) {
@@ -709,6 +710,10 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         if (!found) {
             svc_add(helper, m_f->file_path);
         }
+    }
+    for (int l = 0; l < cur_br->n_files; ++l) {
+        struct file* file = cur_br->stage[l];
+        printf("name[%s] chg[%d]", file->file_path, file->chg_type);
     }
     char *cmt_id = svc_commit(helper, message);
     cur_br->commits[cur_br->n_commits - 1]->n_parent = 2;
