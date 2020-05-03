@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 
@@ -473,38 +473,20 @@ int svc_checkout(void *helper, char *branch_name) {
     for (int i = 0; i < help->n_branches; ++i) {
         if (strcmp(help->branches[i]->name, branch_name) == 0) {
             help->cur_branch = help->branches[i];
-            if (CHECK) {
-                printf("Before check\n");
-                for (int l = 0; l < help->cur_branch->n_files; ++l) {
-                    struct file *file = help->cur_branch->stage[l];
-                    printf("name[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
-                }
-            }
-            check_changes(helper, FALSE);
-            if (CHECK) {
-                printf("After check\n");
-                for (int l = 0; l < help->cur_branch->n_files; ++l) {
-                    struct file *file = help->cur_branch->stage[l];
-                    printf("name[%s] chg[%d] [%d]\n", file->file_path, file->chg_type, file->hash);
-                }
-            }
+
             // if a file is deleted manually, restore it.
             for (int j = 0; j < help->cur_branch->n_files; ++j) {
                 struct file *file = help->cur_branch->stage[j];
-                if (file->chg_type == -1 || file->chg_type == 2 || file->chg_type == 0) {
+                if (file->chg_type != -2) {
                     FILE *fp = fopen(file->file_path, "w");
                     fputs(file->content, fp);
                     fclose(fp);
-                    if (file->chg_type != 0){
-                        file->chg_type = 0;
-                    }
-                }
 
+                }
             }
             return 0;
         }
     }
-
     return -1;
 }
 
