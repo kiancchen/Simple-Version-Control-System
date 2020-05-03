@@ -264,6 +264,13 @@ char *svc_commit(void *helper, char *message) {
 
 
     check_changes(helper, TRUE);
+    if (CHECK) {
+        struct helper *help = (struct helper *) helper;
+        for (int l = 0; l < help->cur_branch->n_files; ++l) {
+            struct file *file = help->cur_branch->stage[l];
+            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+        }
+    }
     char *hex = calc_cmt_id(helper, message);
     if (hex == NULL) {
         return NULL;
