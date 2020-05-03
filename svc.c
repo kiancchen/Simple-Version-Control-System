@@ -246,7 +246,7 @@ void check_changes(void *helper, int check_modification) {
         }
         if (check_modification && new_hash != file->hash) {
             file->hash = new_hash;
-            if (file->chg_type != 1){
+            if (file->chg_type != 1) {
                 file->chg_type = 2;
             }
             long size = file_length(file->file_path);
@@ -419,7 +419,7 @@ int svc_branch(void *helper, char *branch_name) {
         branch->commits[i]->commit_id = strdup(cur_br->commits[i]->commit_id);
         branch->commits[i]->n_files = cur_br->commits[i]->n_files;
         branch->commits[i]->tracked_files = cur_br->commits[i]->tracked_files;
-        branch->commits[i]->parent = malloc(sizeof(char*) * 2);
+        branch->commits[i]->parent = malloc(sizeof(char *) * 2);
         branch->commits[i]->n_parent = cur_br->commits[i]->n_parent;
         for (int j = 0; j < branch->commits[i]->n_parent; ++j) {
             branch->commits[i]->parent[j] = cur_br->commits[i]->parent[j];
@@ -666,7 +666,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     struct branch *cur_br = help->cur_branch;
     if (CHECK) {
         for (int l = 0; l < cur_br->n_files; ++l) {
-            struct file* file = cur_br->stage[l];
+            struct file *file = cur_br->stage[l];
             printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
         }
     }
@@ -685,7 +685,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     int n_files = cur_br->n_files;
     for (int i = 0; i < merged_br->n_files; ++i) {
         struct file *m_f = merged_br->stage[i];
-        if (m_f->chg_type < 0){
+        if (m_f->chg_type < 0) {
             continue;
         }
         int found = FALSE;
@@ -702,7 +702,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                     }
                     // look for the resolution for this conflicting file
                     if (strcmp(resolutions[k].file_name, file->file_path) == 0) {
-                        if (resolutions[k].resolved_file == NULL){
+                        if (resolutions[k].resolved_file == NULL) {
                             break;
                         }
                         hasRes = TRUE;
@@ -724,10 +724,10 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         break;
                     }
                 }
-                if (!hasRes){
-                    if (file->hash != m_f->hash){
-                        file->chg_type = -2;
-                    }
+                if (!hasRes) {
+
+                    file->chg_type = -2;
+
                 }
             }
         }
@@ -735,9 +735,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             svc_add(helper, m_f->file_path);
         }
     }
-    if (CHECK){
+    if (CHECK) {
         for (int l = 0; l < cur_br->n_files; ++l) {
-            struct file* file = cur_br->stage[l];
+            struct file *file = cur_br->stage[l];
             printf("name[%s] chg[%d]", file->file_path, file->chg_type);
         }
     }
