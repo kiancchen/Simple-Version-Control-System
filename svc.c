@@ -660,6 +660,10 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
         return NULL;
     }
     struct branch *cur_br = help->cur_branch;
+    for (int l = 0; l < cur_br->n_files; ++l) {
+        struct file* file = cur_br->stage[l];
+        printf("name[%s] chg[%d]", file->file_path, file->chg_type);
+    }
     // check if there's changes uncommitted
     check_changes(helper, FALSE);
     for (int i = 0; i < cur_br->n_files; ++i) {
