@@ -432,19 +432,20 @@ int svc_branch(void *helper, char *branch_name) {
         branch->commits[i] = malloc(sizeof(struct commit));
 //        commit_copy(branch->commits[i], cur_br->commits[i], branch_name);
         struct commit* dist = branch->commits[i];
+        struct commit* src = cur_br->commits[i];
         dist->br_name = strdup(branch_name);
-        dist->message = strdup(cur_br->commits[i]->message);
-        dist->commit_id = strdup(cur_br->commits[i]->commit_id);
-        dist->n_files = cur_br->commits[i]->n_files;
-        dist->tracked_files = cur_br->commits[i]->tracked_files;
+        dist->message = strdup(src->message);
+        dist->commit_id = strdup(src->commit_id);
+        dist->n_files = src->n_files;
+        dist->tracked_files = src->tracked_files;
         dist->parent = malloc(sizeof(char *) * 2);
-        dist->n_parent = cur_br->commits[i]->n_parent;
+        dist->n_parent = src->n_parent;
         for (int j = 0; j < dist->n_parent; ++j) {
-            dist->parent[j] = cur_br->commits[i]->parent[j];
+            dist->parent[j] = src->parent[j];
         }
-        dist->detached = cur_br->commits[i]->detached;
+        dist->detached = src->detached;
         dist->files = malloc(sizeof(struct file *) * dist->n_files);
-        files_copy(dist->files, cur_br->commits[i]->files, dist->n_files);
+        files_copy(dist->files, src->files, dist->n_files);
 
     }
     branch->n_detached = 0;
