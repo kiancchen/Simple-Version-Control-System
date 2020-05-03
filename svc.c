@@ -725,8 +725,10 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                     }
                 }
                 if (!hasRes) {
+                    if (file->hash != m_f->hash){
+                        file->chg_type = -2;
+                    }
 
-                    file->chg_type = -2;
 
                 }
             }
