@@ -724,13 +724,11 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         break;
                     }
                 }
-                if (file->hash != m_f->hash) {
-                    if (!hasRes){
+                if (!hasRes){
+                    if (file->hash != m_f->hash){
                         file->chg_type = -2;
                     }
                 }
-
-
             }
         }
         if (!found) {
