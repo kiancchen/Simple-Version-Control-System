@@ -756,6 +756,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     merged_br->commits[merged_br->n_commits] = malloc(sizeof(struct commit));
     commit_copy(merged_br->commits[merged_br->n_commits], cur_br->commits[cur_br->n_commits - 1], merged_br->name);
     free(merged_br->stage);
+    merged_br->stage = malloc(sizeof(struct file *) * cur_br->n_files);
     files_copy(merged_br->stage, cur_br->stage, cur_br->n_files);
     merged_br->n_files = cur_br->n_files;
     restore_change(merged_br->stage, merged_br->n_files);
