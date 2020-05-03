@@ -568,7 +568,7 @@ int svc_reset(void *helper, char *commit_id) {
     int index = -1;
     struct helper *help = (struct helper *) helper;
     struct branch *cur_br = help->cur_branch;
-    for (int i = 0; i < cur_br->n_files; ++i) {
+    for (int i = 0; i < cur_br->n_commits; ++i) {
         struct commit *commit = cur_br->commits[i];
         if (strcmp(commit->commit_id, commit_id) == 0) {
             index = i;
