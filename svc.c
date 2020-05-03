@@ -262,7 +262,13 @@ void check_changes(void *helper, int check_modification) {
 char *svc_commit(void *helper, char *message) {
     if (CHECK) printf("svc_commit with message [%s] ", message);
 
-
+    if (CHECK) {
+        struct helper *help = (struct helper *) helper;
+        for (int l = 0; l < help->cur_branch->n_files; ++l) {
+            struct file *file = help->cur_branch->stage[l];
+            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+        }
+    }
     check_changes(helper, TRUE);
     if (CHECK) {
         struct helper *help = (struct helper *) helper;
