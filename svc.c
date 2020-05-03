@@ -772,34 +772,34 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
     cur_br->commits[cur_br->n_commits - 1]->n_parent = 2;
     cur_br->commits[cur_br->n_commits - 1]->parent[1] = merged_br->head->commit_id;
 
-    if (merged_br->n_commits >= merged_br->capacity_commit) {
-        merged_br->capacity_commit *= 2;
-        merged_br->commits = realloc(merged_br->commits, sizeof(struct commit*) * merged_br->capacity_commit);
-    }
-    merged_br->commits[merged_br->n_commits] = malloc(sizeof(struct commit));
-    commit_copy(merged_br->commits[merged_br->n_commits], cur_br->commits[cur_br->n_commits - 1], merged_br->name);
-    for (int k = 0; k < merged_br->n_files; ++k) {
-        struct file *file = merged_br->stage[k];
-        free(file->file_path);
-        file->file_path = NULL;
-        free(file->content);
-        file->content = NULL;
-        free(file);
-        merged_br->stage[k] = NULL;
-    }
-    free(merged_br->stage);
-    merged_br->stage = malloc(sizeof(struct file *) * cur_br->n_files);
-    files_copy(merged_br->stage, cur_br->stage, cur_br->n_files);
-    merged_br->n_files = cur_br->n_files;
-    restore_change(merged_br->stage, merged_br->n_files);
-    merged_br->head = merged_br->commits[merged_br->n_commits];
-    merged_br->n_commits++;
-    if (CHECK) {
-        for (int l = 0; l < cur_br->n_files; ++l) {
-            struct file *file = merged_br->stage[l];
-            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
-        }
-    }
+//    if (merged_br->n_commits >= merged_br->capacity_commit) {
+//        merged_br->capacity_commit *= 2;
+//        merged_br->commits = realloc(merged_br->commits, sizeof(struct commit*) * merged_br->capacity_commit);
+//    }
+//    merged_br->commits[merged_br->n_commits] = malloc(sizeof(struct commit));
+//    commit_copy(merged_br->commits[merged_br->n_commits], cur_br->commits[cur_br->n_commits - 1], merged_br->name);
+//    for (int k = 0; k < merged_br->n_files; ++k) {
+//        struct file *file = merged_br->stage[k];
+//        free(file->file_path);
+//        file->file_path = NULL;
+//        free(file->content);
+//        file->content = NULL;
+//        free(file);
+//        merged_br->stage[k] = NULL;
+//    }
+//    free(merged_br->stage);
+//    merged_br->stage = malloc(sizeof(struct file *) * cur_br->n_files);
+//    files_copy(merged_br->stage, cur_br->stage, cur_br->n_files);
+//    merged_br->n_files = cur_br->n_files;
+//    restore_change(merged_br->stage, merged_br->n_files);
+//    merged_br->head = merged_br->commits[merged_br->n_commits];
+//    merged_br->n_commits++;
+//    if (CHECK) {
+//        for (int l = 0; l < cur_br->n_files; ++l) {
+//            struct file *file = merged_br->stage[l];
+//            printf("name[%s] chg[%d]\n", file->file_path, file->chg_type);
+//        }
+//    }
 
     printf("Merge successful\n");
     return cmt_id;
