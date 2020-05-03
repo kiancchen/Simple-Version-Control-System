@@ -513,6 +513,7 @@ int svc_add(void *helper, char *file_name) {
     // read the file
     char content[size + 1];
     read_file(content, file_name, size);
+    content[size] = '\0';
     if (PC) printf("{%s}\n", content);
     return 0;
     // create a file object
