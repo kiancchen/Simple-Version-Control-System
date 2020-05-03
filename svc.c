@@ -693,7 +693,6 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             struct file *file = cur_br->stage[j];
             if (strcmp(file->file_path, m_f->file_path) == 0) {
                 found = TRUE;
-
                 int hasRes = FALSE;
 
                 for (int k = 0; k < n_resolutions; ++k) {
@@ -725,9 +724,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                     }
                 }
                 if (!hasRes) {
-                    if (file->hash != m_f->hash){
+
                         file->chg_type = -2;
-                    }
+
                 }
             }
         }
