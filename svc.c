@@ -541,6 +541,7 @@ int svc_add(void *helper, char *file_name) {
     }
     cur_br->stage[cur_br->n_files] = file;
     cur_br->n_files++;
+    printf("\nAdding %s [%d] ", file->file_path, file->chg_type);
     // store this change
     if (CHECK) printf("\thash: %d\n", hash);
     return hash;
