@@ -493,6 +493,9 @@ int svc_checkout(void *helper, char *branch_name) {
                 FILE *fp = fopen(file->file_path, "w");
                 fputs(file->content, fp);
                 fclose(fp);
+                if (file->chg_type == -1){
+                    file->chg_type = 0;
+                }
 
             }
             return 0;
