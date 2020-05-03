@@ -693,11 +693,9 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             struct file *file = cur_br->stage[j];
             if (strcmp(file->file_path, m_f->file_path) == 0) {
                 found = TRUE;
-                if (file->hash == m_f->hash) {
-                    break;
-                }
 
-                int delete = TRUE;
+                int hasRes = FALSE;
+
                 for (int k = 0; k < n_resolutions; ++k) {
                     if (resolutions[k].resolved_file == NULL || resolutions[k].file_name == NULL) {
                         continue;
@@ -707,7 +705,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         if (resolutions[k].resolved_file == NULL){
                             break;
                         }
-                        delete = FALSE;
+                        hasRes = TRUE;
                         long size = file_length(resolutions[k].file_name);
                         FILE *fp = fopen(resolutions[k].file_name, "r");
                         // read the file
@@ -726,9 +724,13 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         break;
                     }
                 }
-                if (delete && file->chg_type >= 0){
-                    file->chg_type = -2;
+                if (file->hash != m_f->hash) {
+                    if (!hasRes){
+                        file->chg_type = -2;
+                    }
                 }
+
+
             }
         }
         if (!found) {
