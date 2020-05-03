@@ -711,7 +711,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
                         char content[size + 1];
                         read_file(content, resolutions[k].resolved_file, size);
                         fclose(fp);
-                        content[size - 1] = '\0';
+                        content[size - 3] = '\0';
                         fp = fopen(file->file_path, "w");
                         fputs(content, fp);
                         fclose(fp);
