@@ -621,6 +621,7 @@ char *svc_merge(void *helper, char *branch_name, struct resolution *resolutions,
             printf("Resolution file: %s\n", resolution.resolved_file);
         }
     }
+    return "aa";
 
     struct helper *help = (struct helper *) helper;
     if (branch_name == NULL) {
