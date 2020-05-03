@@ -12,6 +12,7 @@ int files_copy(struct file **dist, struct file **stage, int n_files) {
         file->content = strdup(stage[i]->content);
         file->hash = stage[i]->hash;
         file->chg_type = stage[i]->chg_type;
+        printf("Copying [%s][%d]\n", file->file_path, file->chg_type);
         dist[i] = file;
         if (file->chg_type >= 0) {
             tracked_file++;
