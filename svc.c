@@ -266,7 +266,7 @@ char *svc_commit(void *helper, char *message) {
     check_changes(helper, TRUE);
     char *hex = calc_cmt_id(helper, message);
     if (hex == NULL) {
-        return "No changes";
+        return NULL;
     }
     add_commit(helper, hex, message);
 
@@ -457,7 +457,7 @@ int svc_checkout(void *helper, char *branch_name) {
     for (int i = 0; i < help->n_branches; ++i) {
         if (strcmp(help->branches[i]->name, branch_name) == 0) {
             help->cur_branch = help->branches[i];
-            check_changes(helper, TRUE);
+            check_changes(helper, FALSE);
             // if a file is deleted manually, restore it.
             for (int j = 0; j < help->cur_branch->n_files; ++j) {
                 struct file *file = help->cur_branch->stage[j];
