@@ -1,6 +1,6 @@
 #include "svc.h"
 
-#define CHECK 1
+#define CHECK 0
 #define PC 0
 
 
@@ -12,7 +12,6 @@ int files_copy(struct file **dist, struct file **stage, int n_files) {
         file->content = strdup(stage[i]->content);
         file->hash = stage[i]->hash;
         file->chg_type = stage[i]->chg_type;
-        printf("Copying [%s][%d]\n", file->file_path, file->chg_type);
         dist[i] = file;
         if (file->chg_type >= 0) {
             tracked_file++;
@@ -217,9 +216,6 @@ int add_commit(void *helper, char *id, char *message) {
     cur_br->commits[cur_br->n_commits] = commit;
     cur_br->n_commits++;
     cur_br->head = commit;
-    for (int i = 0; i < commit->n_files; ++i) {
-        printf("Name: %s Change: %d\n", commit->files[i]->file_path, commit->files[i]->chg_type);
-    }
 
     return 1;
 }
@@ -541,7 +537,7 @@ int svc_add(void *helper, char *file_name) {
     }
     cur_br->stage[cur_br->n_files] = file;
     cur_br->n_files++;
-    printf("\nAdding %s [%d] ", file->file_path, file->chg_type);
+
     // store this change
     if (CHECK) printf("\thash: %d\n", hash);
     return hash;
