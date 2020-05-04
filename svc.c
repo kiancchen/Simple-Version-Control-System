@@ -41,7 +41,6 @@ int hash_file(void *helper, char *file_path) {
     if (!fp) {
         return -2;
     }
-    fclose(fp);
 
     int hash = 0;
     for (char *c = file_path; *c != '\0'; c++) {
@@ -55,6 +54,7 @@ int hash_file(void *helper, char *file_path) {
         hash = (hash + c) % 2000000000;
     }
     hash += 1; // add 1 which is subtracted due to EOF (-1)
+    fclose(fp);
 
     return hash;
 }
