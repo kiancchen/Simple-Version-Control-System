@@ -18,7 +18,7 @@ A branch can be “checked out” to indicate that we want to switch our project
 
 Merging is the process of integrating changes from one branch into another. Once a new feature is complete, or a bug is fixed and testing is complete, we may wish to merge these changes back into the master branch to release. Note that merges can happen between any two branches, not necessarily with the master branch.
 
-![CleanShot 2020-12-01 at 14.48.12@2x](/Users/cc/Library/Application Support/CleanShot/media/media_7vS02L7hbQ/CleanShot 2020-12-01 at 14.48.12@2x.png)
+![CleanShot 2020-12-01 at 14.48.12@2x](https://i.loli.net/2020/12/01/epyoDmPwQqxIgnM.png)
 
 Sometimes, we may want to reset to a specific commit. In this case, the files are reverted to the state they were in at that commit, and any new commits continue from that commit. This may result in some commits being detached from the rest of the SVC system. For example, if the master branch is reset to **ec8856** and a new commit is made, **ce9bd8** would not be reachable.
 
